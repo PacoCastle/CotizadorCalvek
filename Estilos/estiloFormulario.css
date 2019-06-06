@@ -1,0 +1,27 @@
+/*ESTILO DE FUENTE PARA TODA LA PAGINA*/
+/*body{font-size:50%; font-family:Arial, Verdana,Tahoma;} */
+/*#div_formulario{float:left; overflow:hidden; border:1px solid #ccc; padding:10px}*/
+
+	label{font-size:0.8em; margin-top:4px; margin-bottom:1px; height:18px}
+	label.Titulo{font-size:1.6em; margin-bottom:10px; font-weight:bold }
+	input, select, textarea{border:1px solid #898989; font-size:0.7em; margin-top:1px}
+	span{color:#666}
+	input, select, textarea{color:#242323; margin-top:5px}
+	
+
+	/*ESTE ES EL TIPS PARA MOSTRAR UNO DEBAJO DEL OTRO ES DECIR EL LABEL PRIMERO Y DESPUES LAS CAJAS*/
+	/*SI DESEAS MOSTRAR HORIZONTAL DEBERÍAS SACAR EL DISPLAY:BLOCK*/
+	/*input, select, textarea, label{display:block;}*/
+	
+	/*BACKGROUND PARA LAS CAJAS*/
+	input.texto_nombre{background-image:url(../Imagenes/nombre.png);}
+	input.texto_direccion{background-image:url(../Imagenes/dire.png);}
+	input.texto_telefono{background-image:url(../Imagenes/tele1.png);}
+	input.texto_comentario{background-image:url(../Imagenes/com.png);}
+	input.texto_correo{background-image:url(../Imagenes/mail_unread.png);}
+	input.texto_contrasena{background-image:url(../Imagenes/textfield_key.ico);}
+	input.texto_nombre, input.texto_direccion, input.texto_telefono, input.texto_comentario, input.texto_correo, input.texto_contrasena{background-repeat:no-repeat; padding-left: 20px}
+	
+	/*ESTILO PARA CUANDO SE POSICIONA EL FOCO EN LAS CAJAS*/
+	/*input.texto_nombre:focus, input.texto_direccion:focus, input.texto_telefono:focus, input.texto_comentario:focus{background-color:#D1E0D3; border:1px solid #000}*/
+	input:focus{background-color:#ABABAB; border:1px solid #54BDEA}

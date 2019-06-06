@@ -1,0 +1,836 @@
+<%@ Page Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="formularioOrdenCompra.aspx.cs" Inherits="OrdenesCompra_listadoOrdenesCompra" Title="SICK - OC" EnableEventValidation="false"%>
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" Runat="Server">
+<script language="javascript">
+
+function ValidaSecuencia(source, arguments)
+{    
+
+        txtJob = eval("document.all.txtJob");    //Se obtiene el objeto de texto
+        txtOrdenServicio = eval("document.all.txtOrdenServicio");    //Se obtiene el objeto de texto
+        
+        var blnBandera = false;
+        
+        alert(txtJob.value);
+        if (txtJob.value != 0)//Se realiza la comparación del valor esperado
+            {
+            blnBandera = true;
+            }
+            
+        alert(txtOrdenServicio.value);
+        if (txtOrdenServicio.value != 0)//Se realiza la comparación del valor esperado
+            {
+            blnBandera = true;
+            }
+
+    if(blnBandera)
+    {
+    arguments.IsValid=true;    //la validación fue exitosa
+    }
+    else
+    {
+    arguments.IsValid=false;
+    }
+    
+    return;
+}
+
+<!--/script-->
+	    <!--script type="text/javascript" language="javascript" -->// <![CDATA[
+            $(function()
+            {
+				$('#<%=txtFechaEntrega.ClientID%>').datePicker({startDate:'01/01/2006'});
+            });           
+// ]]></script>
+    <table style="width: 950px; height: 62px" border="0" cellpadding="1" cellspacing="6">
+        <tr>
+            <td colspan="2">
+                <asp:LinkButton ID="lkbNuevaOC" runat="server" Font-Size="10pt" OnClick="lkbNuevaOC_Click" Visible="False">NUEVA OC</asp:LinkButton>
+                <asp:LinkButton ID="lkbBusuedaOC" runat="server" Font-Size="10pt" PostBackUrl="~/OrdenesCompra/listadoOrdenesCompra.aspx">BUSQUEDA OC</asp:LinkButton></td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+                <strong><span style="font-size: 9pt">Fecha:</span></strong>
+                <asp:Label ID="lblFecha" runat="server" Font-Size="9pt"></asp:Label>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <table>
+                        <tr>
+                            <td>
+                                <strong><span style="font-size: 9pt">Origen:</span></strong></td>
+                            <td>
+                                <asp:DropDownList ID="lstOrigen" runat="server" DataSourceID="ObjectDataSource4" Width="150px"
+                                    DataTextField="descripcion" DataValueField="origenId" Font-Size="9pt" AutoPostBack="True" OnSelectedIndexChanged="lstOrigen_SelectedIndexChanged">
+                                </asp:DropDownList>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="lstOrigen"
+                                    Display="Dynamic" ErrorMessage="campo requerido" Font-Size="8pt" InitialValue="0" ValidationGroup="procesa"></asp:RequiredFieldValidator>
+                                <asp:ObjectDataSource ID="ObjectDataSource4" runat="server" OldValuesParameterFormatString="original_{0}"
+                                    SelectMethod="GetData" TypeName="OrdenCompraTableAdapters.get_comboOrigenTableAdapter">
+                                </asp:ObjectDataSource>
+                                </td>
+                            <td>
+                                <asp:Label ID="lblEstatusOrdenCompra" runat="server" Font-Bold="True" Font-Size="12pt"
+                                    ForeColor="Gray"></asp:Label></td>
+                            <td>
+                                    <asp:Label ID="lblEtiquetaOrdenCompra" runat="server" Font-Bold="True" Font-Size="10pt"
+                                        Text="Orden de Compra:" Visible="False" Width="138px"></asp:Label><br />
+                            </td>
+                            <td>
+                                <asp:Label ID="lblOrdenCompra" runat="server" Font-Bold="True" Font-Size="11pt" Visible="False" Width="170px"></asp:Label><br />
+                                <asp:Label ID="lblOrdenCompraOculto" runat="server" Font-Bold="False" Font-Size="7pt"
+                                    Visible="False"></asp:Label></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 111px">
+                                <strong><span style="font-size: 9pt">Facturar a:</span></strong>               
+                            </td>
+                            <td>
+                                <asp:DropDownList ID="lstOficinas" runat="server" Font-Size="9pt" AutoPostBack="True" AppendDataBoundItems="true" Width="150px">
+                                <asp:ListItem Text="Calvek SA" Value="1" />
+                                <asp:ListItem Text="Calvek Del Centro" Value="2" />
+                                <asp:ListItem Text="Calvek Bajio" Value="3" />
+                                </asp:DropDownList>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr>
+            <td align="left" colspan="5" valign="top">
+
+                            <table border="0" cellpadding="0" cellspacing="0" style="width: 950px; height: 50px">
+                                <tr>
+                                    <td style="width: 118px">
+                                        <strong><span style="font-size: 9pt">PROVEEDOR:</span></strong></td>
+                                    <td colspan="3" >
+                <asp:DropDownList ID="lstRazonSocial" runat="server" AutoPostBack="True" DataSourceID="ObjectDataSource1" DataTextField="Nombre" DataValueField="proveedorId" OnSelectedIndexChanged="lstRazonSocial_SelectedIndexChanged" Font-Size="9pt" Height="20px" Width="400px">
+                </asp:DropDownList><asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="lstRazonSocial"
+                    ErrorMessage="Requerido" Font-Size="8pt" InitialValue="0" Display="Dynamic" ValidationGroup="procesa"></asp:RequiredFieldValidator><asp:ObjectDataSource ID="ObjectDataSource1" runat="server" OldValuesParameterFormatString="original_{0}"
+                    SelectMethod="GetData" TypeName="catalogosTableAdapters.get_listaProveedoresTableAdapter">
+                        <SelectParameters>
+                            <asp:QueryStringParameter Name="intOrdenCompraId" QueryStringField="ordenCompraId"
+                                Type="Int32" />
+                        </SelectParameters>
+                </asp:ObjectDataSource>
+                <asp:TextBox ID="txtNombreProveedor" runat="server" Font-Size="9pt" Visible="False" Width="346px" Height="15px">
+                    </asp:TextBox><asp:RequiredFieldValidator ID="rfvNombreProveedor" runat="server" ControlToValidate="txtNombreProveedor"
+                    Display="Dynamic" Enabled="False" ErrorMessage="Requerido" Font-Size="8pt" ValidationGroup="procesa"></asp:RequiredFieldValidator><strong><span
+                        style="font-size: 9pt"></span></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 118px" valign="top">
+                                            <asp:Label ID="lblEtiRFC" runat="server" Text="RFC:" Font-Bold="True" Font-Size="9pt"></asp:Label></td>
+                                    <td align="left" style="width: 322px" valign="top">
+                                        <asp:TextBox ID="txtRFC" runat="server" Font-Size="9pt" Height="15px" MaxLength="16"
+                                            Visible="False" Width="150px"></asp:TextBox><br />
+                                        <asp:Label ID="lblRFC" runat="server"
+                                                Font-Size="9pt" Width="227px"></asp:Label></td>
+                                    <td align="left" valign="top">
+                                        <span style="font-size: 9pt"><strong>Contacto:</strong></span></td>
+                                    <td align="left" valign="top">
+                                        <asp:TextBox ID="txtContacto" runat="server" Font-Size="9pt" Height="15px" MaxLength="70"
+                                            Width="300px"></asp:TextBox></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 118px" valign="top">
+                                        <strong><span style="font-size: 9pt">Dirección:<asp:Label ID="lblDireccionId" runat="server" Visible="False"></asp:Label></span></strong></td>
+                                    <td align="left" valign="top" style="width: 322px">
+                                        <asp:TextBox ID="txtDireccionProveedor" runat="server" Font-Size="9pt" Visible="False" Width="300px" Height="15px" MaxLength="60"></asp:TextBox><br />
+                                        <asp:Label ID="lblDireccion" runat="server" Width="300px" Font-Size="9pt"></asp:Label><strong><span style="font-size: 9pt"></span></strong></td>
+                                    <td align="left" valign="top">
+                                        <strong><span style="font-size: 9pt">Colonia:</span></strong></td>
+                                    <td align="left" valign="top">
+                <asp:TextBox ID="txtColonia" runat="server" MaxLength="45" Font-Size="9pt" Height="15px" Width="300px" Visible="False"></asp:TextBox><br />
+                                        <asp:Label ID="lblColonia" runat="server" Font-Size="9pt" Width="269px"></asp:Label></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 118px" valign="top">
+                                        <strong><span style="font-size: 9pt">
+                Ciudad:</span></strong></td>
+                                    <td valign="top" style="width: 322px">
+                <asp:TextBox ID="txtCiudadProveedor" runat="server" Font-Size="9pt" Visible="False"
+                    Width="300px" Height="15px" MaxLength="50"></asp:TextBox><asp:Label ID="lblCiudad" runat="server"
+                    Font-Size="9pt" Width="300px"></asp:Label></td>
+                                    <td valign="top">
+                                        <strong><span style="font-size: 9pt">
+                        Estado:</span></strong></td>
+                                    <td valign="top">
+                <asp:TextBox ID="txtEstadoProveedor" runat="server" Font-Size="9pt" Visible="False"
+                    Width="150px" Height="15px" MaxLength="25"></asp:TextBox>
+                <asp:Label ID="lblEstado" runat="server" Font-Size="9pt" Width="88px"></asp:Label></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 118px" valign="top">
+                                        <strong><span style="font-size: 9pt">C.P.:</span></strong></td>
+                                    <td valign="top" style="width: 322px">
+                <asp:TextBox ID="txtCpProveedor" runat="server" Font-Size="9pt" Visible="False" Width="150px" Height="15px" MaxLength="6"></asp:TextBox>
+                    <asp:Label ID="lblCP" runat="server" Width="44px" Font-Size="9pt"></asp:Label></td>
+                                    <td valign="top">
+                                        <strong><span style="font-size: 9pt">
+                    Mail:</span></strong></td>
+                                    <td valign="top">
+                <asp:TextBox ID="txtEmail" runat="server" Width="300px" MaxLength="60" Font-Size="9pt" Height="15px"></asp:TextBox>
+                <asp:Label ID="lblEmail" runat="server" Width="229px" Font-Size="9pt" Visible="False"></asp:Label>
+                <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ControlToValidate="txtEmail"
+                    Display="Dynamic" ErrorMessage="El Mail no es valido" Font-Size="8pt" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
+                    Width="258px" ValidationGroup="procesa"></asp:RegularExpressionValidator></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 118px; height: 12px;" valign="top">
+                                        <strong><span style="font-size: 9pt">
+                Teléfono:</span></strong></td>
+                                    <td valign="top" style="width: 322px; height: 12px;">
+                <asp:TextBox ID="txtTelefonoProveedor" runat="server" Font-Size="9pt" Visible="False"
+                    Width="150px" Height="15px" MaxLength="12"></asp:TextBox>
+                <asp:Label ID="lblTelefono" runat="server" Font-Size="9pt" Width="149px"></asp:Label></td>
+                                    <td valign="top" style="height: 12px">
+                                        <strong><span style="font-size: 9pt">Fax:</span></strong></td>
+                                    <td valign="top" style="height: 12px">
+                <asp:TextBox ID="txtFaxProveedor" runat="server" Font-Size="9pt" Visible="False"
+                    Width="150px" Height="15px" MaxLength="12"></asp:TextBox>
+                <asp:Label ID="lblFax" runat="server" Font-Size="9pt" Width="149px"></asp:Label></td>
+                                </tr>
+                            </table>
+                <hr />
+
+            </td>
+        </tr>
+        <tr>
+            <td align="left" colspan="5" style="height: 22px" valign="top">
+
+                            <table cellpadding="0" cellspacing="1" style="width: 957px; height: 50px">
+                                <tr>
+                                    <td align="left" valign="top">
+                                        <strong><span style="font-size: 9pt">Moneda:<br />
+                <asp:DropDownList ID="lstMoneda" runat="server" DataSourceID="ObjectDataSource2"
+                    DataTextField="descripcion" DataValueField="tipoCambioId" Font-Size="8pt" Height="17px" Width="200px">
+                </asp:DropDownList>
+                <asp:ObjectDataSource ID="ObjectDataSource2" runat="server" OldValuesParameterFormatString="original_{0}"
+                    SelectMethod="GetData" TypeName="cotizadorTableAdapters.get_listaTipoCambioTableAdapter">
+                    <SelectParameters>
+                        <asp:Parameter DefaultValue="1" Name="intOrdenar" Type="Int32" />
+                    </SelectParameters>
+                </asp:ObjectDataSource>
+                                    </span></strong></td>
+                                    <td style="width: 143px;" align="left">
+                                        <strong><span style="font-size: 9pt">
+                Fecha de entrega:<br />
+                <asp:TextBox ID="txtFechaEntrega" runat="server" Font-Size="9pt" Width="150px" Height="15px" MaxLength="10"></asp:TextBox><asp:RegularExpressionValidator ID="RegularExpressionValidator8" runat="server" ControlToValidate="txtFechaEntrega"
+                                            Display="Dynamic" ErrorMessage="fecha invalida: dd/mm/aaaa" Font-Size="7pt" ValidationExpression="^((([0][1-9]|[12][\d])|[3][01])[-\/]([0][13578]|[1][02])[-\/][1-9]\d\d\d)|((([0][1-9]|[12][\d])|[3][0])[-\/]([0][13456789]|[1][012])[-\/][1-9]\d\d\d)|(([0][1-9]|[12][\d])[-\/][0][2][-\/][1-9]\d([02468][048]|[13579][26]))|(([0][1-9]|[12][0-8])[-\/][0][2][-\/][1-9]\d\d\d)$" ValidationGroup="procesa" Height="16px" Width="153px"></asp:RegularExpressionValidator></span></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 229px">
+                                        <strong><span style="font-size: 9pt">Via de Embarque:<br />
+                <asp:TextBox ID="txtViaEmbarque" runat="server" MaxLength="80" Font-Size="9pt" Height="15px" Width="200px"></asp:TextBox></span></strong></td>
+                                    <td colspan="1" align="left">
+                                        <strong><span style="font-size: 9pt">FOB 
+                                        </span><span style="font-size: 7pt">(Libre a Bordo)</span><span style="font-size: 9pt">:<br />
+                <asp:TextBox ID="txtFob" runat="server" MaxLength="80" Font-Size="9pt" Height="15px" Width="300px"></asp:TextBox></span></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 229px; height: 1px;">
+                                        <strong><span style="font-size: 9pt">Proyecto:<br />
+                <asp:TextBox ID="txtProyecto" runat="server" Font-Size="9pt" Width="200px" MaxLength="100" Height="15px"></asp:TextBox></span></strong></td>
+                                    <td style="height: 1px;" colspan="1">
+                                        <strong>&nbsp;</strong><asp:DropDownList ID="lstClasificacionOC" runat="server" AutoPostBack="True" Font-Bold="True"
+                                                            Font-Size="9pt" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged">
+                                                            <asp:ListItem Value="1">JOB</asp:ListItem>
+                                                            <asp:ListItem Value="2">O.S.</asp:ListItem>
+                                                            <asp:ListItem Value="3">OTRO</asp:ListItem>
+                                                        </asp:DropDownList>
+                                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ControlToValidate="lstClasificacionOC"
+                                                            Display="Dynamic" ErrorMessage="Seleccionar una opción" Font-Bold="False" Font-Size="7pt"
+                                                            InitialValue="0" ValidationGroup="procesa"></asp:RequiredFieldValidator><asp:Label ID="lblEtiJob" runat="server" Font-Bold="True" Font-Size="9pt" Text=":"></asp:Label><asp:TextBox ID="txtJob" runat="server" Font-Size="9pt" Width="63px" MaxLength="4" Height="15px"></asp:TextBox><asp:Label ID="lblEtiOS"
+                                                                    runat="server" Font-Bold="True" Font-Size="9pt" Text=":" Visible="False"></asp:Label><asp:TextBox
+                                                                        ID="txtOrdenServicio" runat="server" Font-Size="9pt" Height="15px" MaxLength="3"
+                                                                        Visible="False" Width="60px"></asp:TextBox><asp:Label
+                                                                                    ID="lblEspeOtro" runat="server" Font-Bold="True" Font-Size="9pt" Text="Especifique:"
+                                                                                    Visible="False"></asp:Label><asp:TextBox ID="txtOtroClasificacion" runat="server"
+                                                                                        Font-Size="9pt" Height="15px" MaxLength="30" Visible="False" Width="171px"></asp:TextBox>
+                                        <asp:RequiredFieldValidator
+                                                            ID="RequiredFieldValidator9" runat="server" ControlToValidate="txtJob" Display="Dynamic"
+                                                            ErrorMessage="campo requerido." Font-Bold="False" Font-Size="7pt" ValidationGroup="procesa"></asp:RequiredFieldValidator><asp:RegularExpressionValidator
+                    ID="RegularExpressionValidator9" runat="server" ControlToValidate="txtJob" Display="Dynamic"
+                    ErrorMessage="Numérico, 3-4 dígitos" Font-Size="7pt" ValidationExpression="\d{3,4}" ValidationGroup="procesa" Font-Bold="False"></asp:RegularExpressionValidator><asp:RequiredFieldValidator ID="RequiredFieldValidator8"
+                                                                            runat="server" ControlToValidate="txtOrdenServicio" Display="Dynamic" Enabled="False"
+                                                                            ErrorMessage="campo requerido." Font-Bold="False" Font-Size="7pt" ValidationGroup="procesa"></asp:RequiredFieldValidator><asp:RegularExpressionValidator ID="RegularExpressionValidator10" runat="server"
+                                                ControlToValidate="txtOrdenServicio" Display="Dynamic" ErrorMessage="Numérico, 3 dígitos"
+                                                Font-Bold="False" Font-Size="7pt" ValidationExpression="\d{3}" ValidationGroup="procesa" Enabled="False"></asp:RegularExpressionValidator><asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ControlToValidate="txtOtroClasificacion"
+                                                            Display="Dynamic" Enabled="False" ErrorMessage="campo requerido." Font-Bold="False"
+                                                            Font-Size="7pt" ValidationGroup="procesa"></asp:RequiredFieldValidator></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 229px; height: 5px;">
+                    <asp:Label ID="lblFactura" runat="server" Enabled="False" Font-Size="9pt" Text="Factura:"></asp:Label><br />
+                <asp:GridView ID="GridView2" runat="server" AutoGenerateColumns="False" DataSourceID="sdsFolios"
+                    Font-Size="10pt" ShowFooter="True" DataKeyNames="ordenCompraFacturaId" ShowHeader="False" OnDataBound ="GridView2_DataBound">
+                    <Columns>
+                        <asp:BoundField DataField="ordenCompraFacturaId" HeaderText="ordenCompraFacturaId"
+                            ReadOnly="True" SortExpression="ordenCompraFacturaId" Visible="False" />
+                        <asp:TemplateField HeaderText="Folio" SortExpression="Folio">
+                            <EditItemTemplate>
+                                <asp:Label ID="Label1" runat="server" Text='<%# Eval("Folio") %>'></asp:Label>
+                            </EditItemTemplate>
+                            <FooterTemplate>
+                                <asp:TextBox ID="Folio" runat="server" Height="10px" MaxLength="20" Width="111px" Font-Size="8pt" Visible="False" ValidationGroup="agrega2"></asp:TextBox>
+                                <asp:LinkButton ID="lnkNuevo" runat="server" Font-Size="6pt" OnClick="lnkNuevo_Click">NUEVO</asp:LinkButton>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="Folio"
+                                    Display="Dynamic" ErrorMessage="Capturar Folio" Font-Size="7pt" ValidationGroup="agrega2"></asp:RequiredFieldValidator>
+                            </FooterTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="Label1" runat="server" Text='<%# Bind("Folio") %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField ShowHeader="False">
+                            <EditItemTemplate>
+                                <asp:Button ID="Button1" runat="server" CausesValidation="True" CommandName="Update"
+                                    Text="Actualizar" BorderStyle="Solid" BorderWidth="1px" Font-Size="8pt" />&nbsp;<asp:Button ID="Button2" runat="server" CausesValidation="False"
+                                        CommandName="Cancel" Text="Cancelar" BorderStyle="Solid" BorderWidth="1px" Font-Size="8pt" />
+                            </EditItemTemplate>
+                            <ItemTemplate>
+                                <asp:Button ID="Button1" runat="server" CausesValidation="False" CommandName="Edit"
+                                    Text="E" BorderStyle="Solid" BorderWidth="1px" Font-Size="8pt" ToolTip="Editar" Visible="False" />
+                                <asp:Button ID="Button2" runat="server" CausesValidation="False" CommandName="Delete"
+                                    Text="x" BorderStyle="Solid" BorderWidth="0px" Font-Bold="True" Font-Size="9pt" ForeColor="#C00000" Height="16px" ToolTip="Quitar" Width="15px" />
+                            </ItemTemplate>
+                            <FooterTemplate>
+                                <asp:Button ID="btnAgregar" runat="server" Font-Size="9pt" Height="16px" Text="+"
+                                    Width="20px" BorderStyle="Solid" BorderWidth="0px" Font-Bold="True" OnClick="btnAgregar_Click2" ToolTip="Agregar" Visible="False" ValidationGroup="agrega2" />
+                            </FooterTemplate>
+                        </asp:TemplateField>
+                    </Columns>
+                    <EmptyDataTemplate>
+                        &nbsp;
+                    </EmptyDataTemplate>
+                </asp:GridView>
+                <asp:TextBox ID="txtFolio" runat="server" Font-Size="8pt" Height="10px" MaxLength="20"
+                    Visible="False" Width="180px" ValidationGroup="agrega1" Enabled="False"></asp:TextBox><asp:Button ID="btnAgregar" runat="server" Font-Size="8pt" Height="16px" OnClick="btnAgregar_Click4"
+                    Text="+" ToolTip="Agregar Factura" Visible="False" Width="20px" BorderStyle="Solid" BorderWidth="0px" ValidationGroup="agrega1" Enabled="False" /><asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ControlToValidate="txtFolio"
+                    Display="Dynamic" ErrorMessage="capturar el Folio" Font-Size="7pt" ValidationGroup="agrega1"></asp:RequiredFieldValidator><asp:SqlDataSource ID="sdsFolios" runat="server" ConnectionString="<%$ ConnectionStrings:cotizadorCS %>"
+                    SelectCommand="get_foliosOrdenCompra" SelectCommandType="StoredProcedure" DeleteCommand="delete from ordenCompraFactura&#13;&#10;where ordenCompraFacturaId = @ordenCompraFacturaId&#13;&#10;">
+                    <SelectParameters>
+                        <asp:QueryStringParameter Name="intOrdenCompraId" QueryStringField="ordenCompraId"
+                            Type="Int32" />
+                        <asp:SessionParameter Name="intUsuarioId" SessionField="usuarioId" Type="Int32" />
+                    </SelectParameters>
+                    <DeleteParameters>
+                        <asp:Parameter Name="ordenCompraFacturaId" />
+                    </DeleteParameters>
+                    <InsertParameters>
+                        <asp:Parameter Name="Folio" />
+                        <asp:QueryStringParameter Name="ordenCompraFacturaId" QueryStringField="ordenCompraId" />
+                    </InsertParameters>
+                </asp:SqlDataSource>
+                                    </td>
+                                    <td style="width: 143px; height: 5px;">
+                    <asp:Label ID="lblOtroDocumento" runat="server" Enabled="False" Font-Bold="True"
+                        Font-Size="9pt" Text="Otro Doc.:"></asp:Label><br />
+                <asp:TextBox ID="txtOtroDocumento" runat="server" Enabled="False" Font-Size="9pt" MaxLength="30" Height="15px" Width="300px" OnTextChanged="txtOtroDocumento_TextChanged"></asp:TextBox></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 229px; height: 7px;">
+                                        <strong><span style="font-size: 9pt">
+                                            <asp:Label ID="Label9" runat="server" Text="Pedimento:" Visible="False"></asp:Label><br />
+                                        <asp:TextBox ID="txtPedimento" runat="server" Font-Size="9pt" Height="15px" MaxLength="15"
+                                            Width="200px" Visible="False"></asp:TextBox></span></strong></td>
+                                    <td style="width: 143px; height: 7px;">
+                                        <strong><span style="font-size: 9pt">
+                                            <asp:Label ID="Label8" runat="server" Text="Fecha Pedimento:" Visible="False"></asp:Label>
+                                        <asp:TextBox ID="txtFechaPedimento" runat="server" Font-Size="9pt" Height="15px"
+                                            MaxLength="10" Width="144px" Visible="False"></asp:TextBox><asp:RegularExpressionValidator ID="RegularExpressionValidator11" runat="server"
+                                            ControlToValidate="txtFechaPedimento" Display="Dynamic" ErrorMessage="fecha invalida: dd/mm/aaaa"
+                                            Font-Size="8pt" ValidationExpression="^((([0][1-9]|[12][\d])|[3][01])[-\/]([0][13578]|[1][02])[-\/][1-9]\d\d\d)|((([0][1-9]|[12][\d])|[3][0])[-\/]([0][13456789]|[1][012])[-\/][1-9]\d\d\d)|(([0][1-9]|[12][\d])[-\/][0][2][-\/][1-9]\d([02468][048]|[13579][26]))|(([0][1-9]|[12][0-8])[-\/][0][2][-\/][1-9]\d\d\d)$"
+                                            ValidationGroup="procesa"></asp:RegularExpressionValidator></span></strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 229px; height: 7px;">
+                <asp:CheckBox ID="ckbPagodeContado" runat="server" Font-Bold="True"
+                    Font-Size="9pt" Text="De Contado" />
+                <asp:CheckBox ID="ckbDocRecibido" runat="server" Enabled="False" Font-Bold="True"
+                    Font-Size="9pt" Text="Documento Recibido" /></td>
+                                    <td style="width: 143px; height: 7px;">
+                    <asp:Label ID="lblEstatus" runat="server" Enabled="False" Text="Estatus:" Font-Size="9pt"></asp:Label>
+                <asp:DropDownList ID="lstEstatus" runat="server" DataSourceID="ObjectDataSource3" DataTextField="descripcion" DataValueField="estatusOrdenCompraId" Enabled="False" Font-Size="9pt" Height="15px" Width="150px">
+                </asp:DropDownList><asp:ObjectDataSource ID="ObjectDataSource3" runat="server" OldValuesParameterFormatString="original_{0}"
+                    SelectMethod="GetData" TypeName="OrdenCompraTableAdapters.get_comboEstatusOrdenCompraTableAdapter">
+                </asp:ObjectDataSource>
+                                    </td>
+                                </tr>
+                            </table>
+                <hr />
+
+            </td>
+        </tr>
+        <tr>
+            <td align="left" colspan="5" valign="top" style="height: 2px">
+                <span style="font-size: 9pt">
+                    </span>
+
+                        
+                            <table border="0" cellpadding="1" cellspacing="0" width="100%">
+                                <tr>
+                                    <td colspan="5">
+                    <asp:Label ID="lblBankInformation" runat="server" Font-Bold="True" Font-Size="11pt"
+                    Text="Bank Information" Visible="False"></asp:Label></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 118px;">
+                                        <strong><span style="font-size: 9pt">
+                                            <asp:Label ID="lblAccountName" runat="server" Text="Account Name:" Visible="False"></asp:Label></span></strong></td>
+                                    <td align="left" style="width: 130px;">
+                <asp:TextBox ID="txtAccountName" runat="server" Font-Size="9pt" Width="200px" Height="15px" MaxLength="70" Visible="False"></asp:TextBox></td>
+                                    <td style="width: 149px;">
+                                    </td>
+                                    <td style="width: 82px;">
+                                        <strong><span style="font-size: 9pt">
+                                            <asp:Label ID="lblAddress" runat="server" Text="Address:" Visible="False"></asp:Label></span></strong></td>
+                                    <td align="left">
+                <asp:TextBox ID="txtAddress" runat="server" Font-Size="9pt" Width="200px" Height="15px" MaxLength="799" Visible="False"></asp:TextBox></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 118px;">
+                                        <strong><span style="font-size: 9pt">
+                                            <asp:Label ID="lblAccountNumber" runat="server" Text="Account Number:" Visible="False"></asp:Label></span></strong></td>
+                                    <td align="left" style="width: 130px;">
+                <asp:TextBox ID="txtAccountNumber" runat="server" Font-Size="9pt" Height="15px" Width="200px" MaxLength="30" Visible="False"></asp:TextBox></td>
+                                    <td style="width: 149px;">
+                                    </td>
+                                    <td style="width: 82px;">
+                                        <strong><span style="font-size: 9pt">
+                                            <asp:Label ID="lblBankName" runat="server" Text="Bank Name:" Visible="False"></asp:Label></span></strong></td>
+                                    <td align="left">
+                <asp:TextBox ID="txtBankName" runat="server" Font-Size="9pt" Width="200px" Height="15px" MaxLength="70" Visible="False"></asp:TextBox></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 118px">
+                                        <strong><span style="font-size: 9pt">
+                                            <asp:Label ID="lblBankAddress" runat="server" Text="Bank Address:" Visible="False"></asp:Label></span></strong></td>
+                                    <td align="left" style="width: 130px">
+                <asp:TextBox ID="txtBankAddress" runat="server"  Width="200px" Font-Size="9pt" Height="15px" MaxLength="799" Visible="False"></asp:TextBox></td>
+                                    <td style="width: 149px">
+                                    </td>
+                                    <td style="width: 82px">
+                                        <strong><span style="font-size: 9pt">
+                                            <asp:Label ID="lblABA" runat="server" Text="A.B.A.:" Visible="False"></asp:Label></span></strong></td>
+                                    <td align="left">
+                                        <asp:TextBox ID="txtAba" runat="server" Font-Size="9pt" Height="15px" Width="200px" MaxLength="30" Visible="False"></asp:TextBox></td>
+                                </tr>
+                            </table>
+
+            </td>
+        </tr>
+        <tr>
+            <td colspan="5" style="height: 22px">
+    <table style="width: 975px; height: 61px" border="0">
+        <tr>
+            <td colspan="11" style="height: 1px" valign="top">
+                <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" CellPadding="2"
+                    DataKeyNames="detalleOrdenCompraId" DataSourceID="SqlDataSource1" Font-Size="8pt" 
+                    ForeColor="#333333" GridLines="Horizontal" Width="957px" ShowFooter="True" BorderStyle="Solid" BorderWidth="1px"
+                    OnRowCreated="Grid_RowCreated" 
+                    OnDataBound ="GridView1_DataBound" 
+                    onRowDataBound="GridView1_RowDataBound" 
+                    onrowcommand="OrdenCompras_Command"
+                    >
+                    <FooterStyle BackColor="#E0E0E0" Font-Bold="True" ForeColor="White" HorizontalAlign="Right" />
+                    <Columns>
+                        <asp:TemplateField HeaderText="-">
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Bottom" />
+                            <ItemTemplate>
+                                <asp:Label ID="Label2" runat="server" Text="<%# get_numeroPartida() %>" Font-Size="7pt"></asp:Label>
+                            </ItemTemplate>
+                            <HeaderStyle Width="2%" />
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="CANTIDAD" SortExpression="cantidad">
+                            <EditItemTemplate>
+                                <asp:TextBox ID="TextBox1" runat="server" Text='<%# Bind("cantidad") %>' Font-Size="8pt" Width="46px" MaxLength="9"></asp:TextBox>
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator18" runat="server"
+                                    ControlToValidate="TextBox1" Display="Dynamic" ErrorMessage="Numérico" Font-Size="7pt"
+                                    Height="15px" ValidationExpression="^\d+(\.\d{1,2})?$" ValidationGroup="editar"
+                                    Width="49px"></asp:RegularExpressionValidator>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator14" runat="server" ControlToValidate="TextBox1"
+                                    Display="Dynamic" ErrorMessage="Requerido" Font-Size="7pt" ValidationGroup="editar"></asp:RequiredFieldValidator>
+                            </EditItemTemplate>
+                            <FooterTemplate>
+                                <asp:TextBox ID="txtCantidad" runat="server" Width="46px" Font-Size="8pt" MaxLength="9"></asp:TextBox><br />
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="txtCantidad"
+                                    Display="Dynamic" ErrorMessage="Numérico" Font-Size="7pt" Height="15px"
+                                    ValidationExpression="^\d+(\.\d{1,2})?$" ValidationGroup="agregar" Width="49px"></asp:RegularExpressionValidator><asp:RequiredFieldValidator
+                                        ID="RequiredFieldValidator12" runat="server" ControlToValidate="txtCantidad"
+                                        Display="Dynamic" ErrorMessage="Requerido" Font-Size="7pt" ValidationGroup="agregar"></asp:RequiredFieldValidator>
+                            </FooterTemplate>
+                            <ItemStyle HorizontalAlign="Center" />
+                            <ItemTemplate>
+                                <asp:Label ID="Label3" runat="server" Text='<%# Bind("cantidad") %>' Font-Size="9pt"></asp:Label>
+                            </ItemTemplate>
+                            <FooterStyle HorizontalAlign="Center" />
+                            <HeaderStyle Width="10%" />
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="DESCRIPCION" SortExpression="descripcion">
+                            <EditItemTemplate>
+                                <asp:TextBox ID="TextBox2" runat="server" Text='<%# Bind("descripcion") %>' Font-Size="8pt" Width="350px" MaxLength="300"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator11" runat="server" ControlToValidate="TextBox2"
+                                    Display="Dynamic" ErrorMessage="Requerido" Font-Size="7pt" ValidationGroup="editar"></asp:RequiredFieldValidator>
+                            </EditItemTemplate>
+                            <FooterTemplate>
+                                <asp:TextBox ID="txtDescripcion" runat="server" Width="350px" Font-Size="8pt" MaxLength="300"></asp:TextBox><br />
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtDescripcion"
+                                    Display="Dynamic" ErrorMessage="Requerido" Font-Size="7pt" ValidationGroup="agregar"></asp:RequiredFieldValidator>
+                            </FooterTemplate>
+                            <HeaderStyle HorizontalAlign="Left" Width="40%" />
+                            <ItemTemplate>
+                                <asp:Label ID="Label4" runat="server" Text='<%# Bind("descripcion") %>' Font-Size="9pt"></asp:Label>
+                            </ItemTemplate>
+                            <FooterStyle HorizontalAlign="Left" />
+                            <ItemStyle Width="400px" />
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="PRECIO" SortExpression="precioUnitario">
+                            <EditItemTemplate>
+                                <asp:TextBox ID="TextBox3" runat="server" Font-Size="8pt" Text='<%# Bind("precioUnitario") %>' Width="76px" MaxLength="11"></asp:TextBox>
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator22" runat="server"
+                                    ControlToValidate="TextBox3" Display="Dynamic" ErrorMessage="Numérico" Font-Size="7pt"
+                                    ValidationExpression="^\d+(\.\d{1,2})?$" ValidationGroup="editar"></asp:RegularExpressionValidator><asp:RequiredFieldValidator
+                                        ID="RequiredFieldValidator15" runat="server" ControlToValidate="TextBox3" Display="Dynamic"
+                                        ErrorMessage="Requerido" Font-Size="7pt" ValidationGroup="editar"></asp:RequiredFieldValidator>
+                            </EditItemTemplate>
+                            <FooterTemplate>
+                                <asp:TextBox ID="txtPrecio" runat="server" Font-Size="8pt" Width="76px" MaxLength="11"></asp:TextBox><br />
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ControlToValidate="txtPrecio"
+                                    Display="Dynamic" ErrorMessage="Numérico" Font-Size="7pt" ValidationExpression="^\d+(\.\d{1,2})?$"
+                                    ValidationGroup="agregar"></asp:RegularExpressionValidator>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator16" runat="server" ControlToValidate="txtPrecio"
+                                    Display="Dynamic" ErrorMessage="Requerido" Font-Size="7pt" ValidationGroup="agregar"></asp:RequiredFieldValidator>
+                            </FooterTemplate>
+                            <ItemStyle HorizontalAlign="Right" />
+                            <HeaderStyle HorizontalAlign="Right" Width="10%" />
+                            <ItemTemplate>
+                                <asp:Label ID="Label5" runat="server" Font-Size="9pt" Text='<%# String.Format("{0:#,##0.00}", Eval("precioUnitario")) %>'></asp:Label>
+                            </ItemTemplate>
+                            <FooterStyle HorizontalAlign="Right" />
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="DESCUENTO">
+                            <EditItemTemplate>
+                                <asp:TextBox ID="Descuento" runat="server" Font-Size="8pt" Text='<%# Bind("Descuento") %>'
+                                    Width="30px" MaxLength="2"></asp:TextBox>
+                                <span style="color: gray">%</span>
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ControlToValidate="Descuento"
+                                    Display="Dynamic" ErrorMessage="valor numerico" Font-Size="8pt" Height="15px"
+                                    ValidationExpression="^\d+(\.\d{1,2})?$" Width="86px"></asp:RegularExpressionValidator>
+                            </EditItemTemplate>
+                            <FooterTemplate>
+                                <asp:TextBox ID="txtDescuento" runat="server" Font-Size="8pt" Width="30px" MaxLength="2"></asp:TextBox>
+                                <span style="color: gray">%</span>
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator33" runat="server"
+                                    ControlToValidate="txtDescuento" Display="Dynamic" ErrorMessage="valor numerico"
+                                    Font-Bold="False" Font-Size="8pt" Height="15px" ValidationExpression="^\d+(\.\d{1,2})?$"
+                                    Width="86px"></asp:RegularExpressionValidator>
+                            </FooterTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="Label6" runat="server" Text='<%# Bind("Descuento") %>'></asp:Label>
+                            </ItemTemplate>
+                            <ItemStyle HorizontalAlign="Center" />
+                            <HeaderStyle Width="10%" />
+                            <FooterStyle HorizontalAlign="Center" />
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="TOTAL" SortExpression="Total">
+                            <EditItemTemplate>
+                                <asp:Label ID="Label1" runat="server" Text='<%# Eval("Total") %>' Font-Size="9pt"></asp:Label>
+                            </EditItemTemplate>
+                            <ItemStyle HorizontalAlign="Right" Font-Bold="True" Font-Size="9pt" ForeColor="Gray" />
+                            <HeaderStyle HorizontalAlign="Right" Width="5%" />
+                            <ItemTemplate>
+                                <asp:Label ID="Label1" runat="server" Font-Size="9pt" Text='<%# String.Format("{0:N}",Get_Amount(Double.Parse(Eval("Total").ToString()))) %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="FECHA E." SortExpression="fechaEntrega">
+                            <EditItemTemplate>
+                                <asp:TextBox ID="fechaEntrega" runat="server" MaxLength="10" Text='<%# Bind("fechaEntrega") %>'
+                                    Width="70px" Font-Size="8pt"></asp:TextBox><br />
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator8" runat="server" ControlToValidate="fechaEntrega"
+                                    Display="Dynamic" ErrorMessage="fecha invalida: dd/mm/aaaa" Font-Size="7pt" Height="16px"
+                                    ValidationExpression="^((([0][1-9]|[12][\d])|[3][01])[\/]([0][13578]|[1][02])[\/][1-9]\d\d\d)|((([0][1-9]|[12][\d])|[3][0])[\/]([0][13456789]|[1][012])[\/][1-9]\d\d\d)|(([0][1-9]|[12][\d])[\/][0][2][\/][1-9]\d([02468][048]|[13579][26]))|(([0][1-9]|[12][0-8])[\/][0][2][\/][1-9]\d\d\d)$"
+                                    ValidationGroup="procesa" Width="153px"></asp:RegularExpressionValidator>
+                            </EditItemTemplate>
+                            <ItemTemplate>
+                                <asp:Label ID="Label9" runat="server" Text='<%# Bind("fechaEntrega") %>'></asp:Label>
+                            </ItemTemplate>
+                            <FooterTemplate>
+                                <asp:TextBox ID="txtFechaEntrega" runat="server" Text='<%# Bind("fechaEntrega") %>'
+                                    Width="70px" MaxLength="10" Font-Size="8pt"></asp:TextBox><asp:RegularExpressionValidator ID="RegularExpressionValidator8"
+                                        runat="server" ControlToValidate="txtFechaEntrega" Display="Dynamic" ErrorMessage="fecha invalida: dd/mm/aaaa"
+                                        Font-Size="7pt" Height="16px" ValidationExpression="^((([0][1-9]|[12][\d])|[3][01])[-\/]([0][13578]|[1][02])[-\/][1-9]\d\d\d)|((([0][1-9]|[12][\d])|[3][0])[-\/]([0][13456789]|[1][012])[-\/][1-9]\d\d\d)|(([0][1-9]|[12][\d])[-\/][0][2][-\/][1-9]\d([02468][048]|[13579][26]))|(([0][1-9]|[12][0-8])[-\/][0][2][-\/][1-9]\d\d\d)$"
+                                        ValidationGroup="procesa" Width="153px"></asp:RegularExpressionValidator>
+                            </FooterTemplate>
+                            <HeaderStyle Width="10%" />
+                            <FooterStyle HorizontalAlign="Center" />
+                            <ItemStyle HorizontalAlign="Center" />
+                        </asp:TemplateField>
+                        <asp:TemplateField ShowHeader="False">
+                            <EditItemTemplate>
+                                <asp:ImageButton ID="ImgBtnActualizar" runat="server" CommandName="Update" Height="14px"
+                                    ImageUrl="~/Imagenes/checkmark.png" ToolTip="Actualizar" ValidationGroup="editar"
+                                    Width="14px" />&nbsp;
+                                <asp:ImageButton ID="ImgBtnCancelar" runat="server" CausesValidation="False" CommandName="Cancel"
+                                    Height="14px" ImageUrl="~/Imagenes/close.png" ToolTip="Cancelar" Width="14px" />
+                            </EditItemTemplate>
+                            <ItemTemplate>
+                                <asp:ImageButton ID="ImgBtnEditar" runat="server" AlternateText="Editar" BackColor="White"
+                                    CausesValidation="False" CommandName="Edit" Height="16px" ImageUrl="~/Imagenes/pencil_48.png"
+                                    ToolTip="Editar" Width="16px" />&nbsp;
+                                <asp:ImageButton ID="ImgBtnQuitar" runat="server" CausesValidation="False" CommandName="Borrar"
+                                    Height="16px" ImageUrl="~/Imagenes/X.png" ToolTip="Quitar" Width="16px" CommandArgument='<%# Eval("detalleOrdenCompraId") %>'/>
+                            </ItemTemplate>
+                            <FooterTemplate>
+                                <asp:ImageButton ID="btnAgregar" runat="server" Height="16px" ImageUrl="~/Imagenes/add.png"
+                                    OnClick="btnAgregar_Click" ToolTip="Agregar" ValidationGroup="agregar" Width="16px" />
+                            </FooterTemplate>
+                            <ControlStyle BackColor="Gainsboro"/>
+                            <HeaderStyle Width="7%" />
+                            <ItemStyle VerticalAlign="Top" HorizontalAlign="Right" />
+                            <HeaderTemplate>
+                                <asp:Image ID="Image1" runat="server" Height="18px" ImageUrl="~/Imagenes/settings.png"
+                                    Width="18px" />
+                            </HeaderTemplate>
+                            
+                        </asp:TemplateField>
+                        
+                    </Columns>
+                    <RowStyle BackColor="#F7F6F3" ForeColor="#333333" Height="5px" />
+                    <EditRowStyle BackColor="#E2DED6" />
+                    <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+                    <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                    <HeaderStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                    <AlternatingRowStyle BackColor="White" ForeColor="#284775" Height="5px" />
+                    <EmptyDataTemplate>
+                <table cellpadding="0" cellspacing="0" bgcolor="#e0e0e0" height="1" width="957">
+                    <tr>
+                        <th style="width: 134px; height: 16px;">
+                            <span style="font-size: 10pt">
+                                <asp:Label ID="lblCantidad" runat="server" Font-Size="8pt" Text="Cantidad" BackColor="#5D7B9D" ForeColor="White" Width="120px"></asp:Label></span></th>
+                        <th style="text-align: left; width: 466px; height: 16px;">
+                            <span style="font-size: 10pt">
+                                <asp:Label ID="lblDescripcion" runat="server" Font-Size="8pt" Text="Descripción" BackColor="#5D7B9D" ForeColor="White" Width="455px"></asp:Label></span></th>
+                        <th style="text-align: right; height: 16px;">
+                            <span style="font-size: 10pt">
+                                <asp:Label ID="lblPrecio" runat="server" Font-Size="8pt" Text="Precio" BackColor="#5D7B9D" ForeColor="White" Width="117px"></asp:Label></span></th>
+                        <th style="text-align: right; height: 16px;">
+                            <span style="font-size: 10pt">
+                                <asp:Label ID="lblDescuento2" runat="server" Font-Size="8pt" Text="Descuento" BackColor="#5D7B9D" ForeColor="White" Width="85px"></asp:Label></span></th>
+                        <th style="text-align: right; height: 16px;">
+                            <asp:Label ID="lblTiempoEntrega" runat="server" BackColor="#5D7B9D" Font-Size="8pt"
+                                ForeColor="White" Text="Fecha E." Width="100px"></asp:Label></th>
+                        <th style="height: 16px">
+                            <asp:Label ID="lblEditar" runat="server" BackColor="#5D7B9D" Font-Size="8pt" ForeColor="White"
+                                Text="-" Width="80px"></asp:Label></th>
+                    </tr>
+                    <tr>
+                        <td style="height: 12px; text-align: center; width: 134px;">
+                            <asp:TextBox ID="txtCantidad" runat="server" Font-Size="8pt" Width="46px" ValidationGroup="partidaAlterna" MaxLength="9"></asp:TextBox><asp:RegularExpressionValidator
+                                ID="RegularExpressionValidator1" runat="server" ControlToValidate="txtCantidad"
+                                Display="Dynamic" ErrorMessage="Numérico" Font-Size="7pt" Height="15px" ValidationExpression="^\d+(\.\d{1,2})?$"
+                                ValidationGroup="partidaAlterna" Width="49px"></asp:RegularExpressionValidator><asp:RequiredFieldValidator
+                                    ID="RequiredFieldValidator12" runat="server" ControlToValidate="txtCantidad"
+                                    Display="Dynamic" ErrorMessage="Requerido" Font-Size="7pt" ValidationGroup="partidaAlterna"></asp:RequiredFieldValidator></td>
+                        <td style="height: 12px; width: 466px;">
+                            <asp:TextBox ID="txtDescripcion" runat="server" Font-Size="8pt" Width="400px" ValidationGroup="partidaAlterna" MaxLength="300"></asp:TextBox><asp:RequiredFieldValidator
+                                ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtDescripcion"
+                                Display="Dynamic" ErrorMessage="Requerido" Font-Size="7pt" ValidationGroup="partidaAlterna"></asp:RequiredFieldValidator></td>
+                        <td style="height: 12px; text-align: right">
+                            <asp:TextBox ID="txtPrecio" runat="server" Font-Size="8pt" Width="76px" ValidationGroup="partidaAlterna" MaxLength="10"></asp:TextBox><asp:RegularExpressionValidator
+                                ID="RegularExpressionValidator7" runat="server" ControlToValidate="txtPrecio"
+                                Display="Dynamic" ErrorMessage="Numérico" Font-Size="7pt" ValidationExpression="^\d+(\.\d{1,2})?$"
+                                ValidationGroup="partidaAlterna"></asp:RegularExpressionValidator><asp:RequiredFieldValidator
+                                    ID="RequiredFieldValidator16" runat="server" ControlToValidate="txtPrecio" Display="Dynamic"
+                                    ErrorMessage="Requerido" Font-Size="7pt" ValidationGroup="partidaAlterna"></asp:RequiredFieldValidator></td>
+                        <td style="height: 12px; text-align: right">
+                            <asp:TextBox ID="txtDescuento2" runat="server" Font-Size="8pt" Width="31px" ValidationGroup="partidaAlterna" MaxLength="2"></asp:TextBox><asp:RegularExpressionValidator
+                                ID="RegularExpressionValidator33" runat="server" ControlToValidate="txtDescuento2"
+                                Display="Dynamic" ErrorMessage="valor numerico" Font-Bold="False" Font-Size="8pt"
+                                Height="15px" ValidationExpression="^\d+(\.\d{1,2})?$" ValidationGroup="partidaAlterna"></asp:RegularExpressionValidator></td>
+                        <td style="width: 48px; height: 12px; text-align: center">
+                            <asp:TextBox ID="tiempoEntregaPart" runat="server" Font-Size="8pt" MaxLength="10"
+                                Width="76px"></asp:TextBox><asp:RegularExpressionValidator ID="RegularExpressionValidator12"
+                                    runat="server" ControlToValidate="tiempoEntregaPart" Display="Dynamic" ErrorMessage="fecha invalida: dd/mm/aaaa"
+                                    Font-Size="7pt" Height="16px" ValidationExpression="^((([0][1-9]|[12][\d])|[3][01])[-\/]([0][13578]|[1][02])[-\/][1-9]\d\d\d)|((([0][1-9]|[12][\d])|[3][0])[-\/]([0][13456789]|[1][012])[-\/][1-9]\d\d\d)|(([0][1-9]|[12][\d])[-\/][0][2][-\/][1-9]\d([02468][048]|[13579][26]))|(([0][1-9]|[12][0-8])[-\/][0][2][-\/][1-9]\d\d\d)$"
+                                    ValidationGroup="partidaAlterna" Width="153px"></asp:RegularExpressionValidator></td>
+                        <td style="width: 48px; height: 12px; text-align: center;">
+                            <asp:ImageButton ID="btnAgregar2" runat="server" Height="16px" ImageUrl="~/Imagenes/add.png"
+                                OnClick="btnAgregar2_Click" ToolTip="Agregar" ValidationGroup="partidaAlterna"
+                                Width="16px" /></td>
+                    </tr>
+                </table>
+                    </EmptyDataTemplate>
+                </asp:GridView>
+                <asp:SqlDataSource ID="SqlDataSource1" runat="server" ConnectionString="<%$ ConnectionStrings:cotizadorCS %>"
+                    DeleteCommand="delete detalleOrdenCompra where detalleOrdenCompraId = @detalleOrdenCompraId and ordenCompraId = @intOrdenCompraId&#13;&#10;&#13;&#10;INSERT INTO detalleOrdenCompra_log(tipo,detalleOrdenCompraId,ordenCompraId,fecha,usuarioId)&#13;&#10;values('BORRADO DETALLE',@detalleOrdenCompraId,@intOrdenCompraId,getdate(),@intUsuarioId)&#13;&#10;"
+                    SelectCommand="get_datosDetalleOrdenCompra" SelectCommandType="StoredProcedure"
+                    UpdateCommand="set_actualizaDatosDetalleOrdenCompra" UpdateCommandType="StoredProcedure">
+                    <DeleteParameters>
+                        <asp:Parameter Name="detalleOrdenCompraId" />
+                        <asp:ControlParameter ControlID="lblOrdenCompraOculto" Name="intOrdenCompraId" PropertyName="Text" />
+                        <asp:SessionParameter Name="intUsuarioId" SessionField="usuarioId" />
+                    </DeleteParameters>
+                    <UpdateParameters>
+                        <asp:Parameter DefaultValue="" Name="detalleOrdenCompraId" Type="Int32" />
+                        <asp:QueryStringParameter Name="OrdenCompraId" QueryStringField="ordenCompraId" Type="Int32" />
+                        <asp:Parameter Name="Cantidad" Type="Single" />
+                        <asp:Parameter Name="descripcion" Type="String" />
+                        <asp:Parameter Name="precioUnitario" Type="Single" />
+                        <asp:Parameter Name="descuento" Type="Single" />
+                        <asp:Parameter Name="tipoDetalleOrdenCompraId" Type="Int32" />
+                        <asp:Parameter Name="fechaEntrega" Type="String" />
+                        <asp:Parameter Name="tiempoEntrega" Type="String" />
+                        <asp:SessionParameter Name="intUsuarioId" SessionField="usuarioId" Type="Int32" />
+                    </UpdateParameters>
+                    <SelectParameters>
+                        <asp:QueryStringParameter Name="intOrdenCompraId" QueryStringField="ordenCompraId" Type="Int32" DefaultValue="0" />
+                        <asp:SessionParameter Name="intUsuarioId" SessionField="usuarioId" Type="Int32" />
+                    </SelectParameters>
+                </asp:SqlDataSource>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="8">
+            </td>
+            <td style="text-align: right">
+                <span style="font-size: 9pt">Subtotal:</span></td>
+            <td style="text-align: right">
+                <asp:Label ID="lblSubtotal" runat="server" Font-Size="9pt" Text="0.0"></asp:Label></td>
+            <td style="text-align: right">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="7">
+                <span style="font-size: 9pt">Datos transferencia:</span></td>
+            <td rowspan="2" valign="top">
+                <asp:TextBox ID="txtDatosTransferencia" runat="server" Height="40px" Rows="3" TextMode="MultiLine"
+                    Width="452px" MaxLength="800" Font-Size="9pt"></asp:TextBox></td>
+            <td style="text-align: right">
+                <span style="font-size: 9pt">Descuento:<asp:TextBox ID="txtDescuento" runat="server"
+                    AutoPostBack="True" Font-Size="9pt" MaxLength="2" OnTextChanged="txtDescuento_TextChanged"
+                    Width="23px">0</asp:TextBox>%</span></td>
+            <td style="text-align: right">
+                <asp:Label ID="lblDescuento" runat="server" Font-Size="9pt" Text="0.0"></asp:Label></td>
+            <td style="text-align: left" align="left">
+                <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ControlToValidate="txtDescuento"
+                    Display="Dynamic" ErrorMessage="valor numerico" Font-Size="8pt" Height="15px"
+                    ValidationExpression="^\d+(\.\d{1,2})?$" Width="86px" ValidationGroup="procesa"></asp:RegularExpressionValidator></td>
+        </tr>
+        <tr>
+            <td colspan="7" style="height: 15px">
+            </td>
+            <td style="text-align: right; height: 15px;">
+                <span style="font-size: 9pt">Envio:</span></td>
+            <td style="text-align: right; height: 15px;" align="right">
+                <asp:TextBox ID="txtEnvio" runat="server" AutoPostBack="True" Font-Size="9pt" OnTextChanged="txtEnvio_TextChanged"
+                    Width="82px" MaxLength="9">0.0</asp:TextBox></td>
+            <td style="text-align: left; height: 15px;" align="left">
+                <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server" ControlToValidate="txtEnvio"
+                    Display="Dynamic" ErrorMessage="valor numerico" Font-Size="8pt" Height="15px"
+                    ValidationExpression="^\d+(\.\d{1,2})?$" Width="86px" ValidationGroup="procesa"></asp:RegularExpressionValidator></td>
+        </tr>
+        <tr>
+            <td colspan="7">
+                <span style="font-size: 9pt">Instrucciones de Embarque:</span></td>
+            <td rowspan="2" valign="top">
+                <asp:TextBox ID="txtIntruccionesEmbarque" runat="server" Height="40px" Rows="3" TextMode="MultiLine"
+                    Width="453px" MaxLength="800" Font-Size="9pt"></asp:TextBox></td>
+            <td style="text-align: right">
+                <span style="font-size: 9pt">Impuesto:<asp:TextBox ID="txtImpuesto" runat="server"
+                    AutoPostBack="True" Font-Size="9pt" MaxLength="2" OnTextChanged="txtImpuesto_TextChanged"
+                    Width="23px">16</asp:TextBox>%</span></td>
+            <td style="text-align: right">
+                <asp:Label ID="lblImpuesto" runat="server" Font-Size="10pt" Text="0.0"></asp:Label></td>
+            <td style="text-align: left" align="left">
+                <asp:RegularExpressionValidator ID="RegularExpressionValidator5" runat="server" ControlToValidate="txtImpuesto"
+                    Display="Dynamic" ErrorMessage="valor numerico" Font-Size="8pt" Height="15px"
+                    ValidationExpression="^\d+(\.\d{1,2})?$" Width="86px" ValidationGroup="procesa"></asp:RegularExpressionValidator></td>
+        </tr>
+        <tr>
+            <td colspan="7" style="height: 11px">
+            </td>
+            <td style="text-align: right; height: 11px;">
+                <span style="font-size: 9pt">Imp. Importación:</span></td>
+            <td align="right" style="height: 11px">
+                <asp:TextBox ID="txtImpuestoImportacion" runat="server" AutoPostBack="True" Font-Size="9pt"
+                    OnTextChanged="txtImpuestoImportacion_TextChanged" Width="82px" MaxLength="9">0.0</asp:TextBox></td>
+            <td align="left" style="height: 11px">
+                <asp:RegularExpressionValidator ID="RegularExpressionValidator6" runat="server" ControlToValidate="txtImpuestoImportacion"
+                    Display="Dynamic" ErrorMessage="valor numerico" Font-Size="8pt" Height="15px"
+                    ValidationExpression="^\d+(\.\d{1,2})?$" Width="86px" ValidationGroup="procesa"></asp:RegularExpressionValidator></td>
+        </tr>
+        <tr>
+            <td colspan="7" style="height: 8px">
+                <span style="font-size: 9pt">Terminos:</span></td>
+            <td rowspan="3" valign="top">
+                <asp:TextBox ID="txtTerminos" runat="server" Height="40px" Rows="3" TextMode="MultiLine"
+                    Width="453px" MaxLength="800" Font-Size="9pt"></asp:TextBox></td>
+            <td style="height: 8px; text-align: right">
+                <span style="font-size: 9pt">Total:</span></td>
+            <td style="height: 8px; text-align: right">
+                <asp:Label ID="lblTotal" runat="server" Text="0.0"></asp:Label></td>
+            <td style="height: 8px; text-align: right">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="7" style="height: 2px">
+            </td>
+            <td style="height: 2px; text-align: right" valign="top">
+                <asp:Label ID="lblUsuario" runat="server" Font-Size="9pt" Text="Usuario:" Visible="False"></asp:Label></td>
+            <td colspan="2" style="height: 2px; text-align: right" valign="top">
+                <asp:ObjectDataSource ID="odsAgentesXOficina" runat="server" OldValuesParameterFormatString="original_{0}"
+                    SelectMethod="GetData" TypeName="catalogosTableAdapters.get_listaAgentesXOficinaTableAdapter">
+                    <SelectParameters>
+                        <asp:Parameter DefaultValue="4" Name="intOficinaId" Type="Int32" />
+                        <asp:SessionParameter DefaultValue="" Name="intUsuarioId" SessionField="usuarioId"
+                            Type="Int32" />
+                    </SelectParameters>
+                </asp:ObjectDataSource>
+                <asp:DropDownList ID="lstAgenteOficina" runat="server" DataSourceID="odsAgentesXOficina"
+                    DataTextField="nombreUsuario" DataValueField="usuarioId" Font-Size="8pt" Height="17px"
+                    Width="200px" Visible="False">
+                </asp:DropDownList></td>
+        </tr>
+        <tr>
+            <td colspan="7" style="height: 5px">
+            </td>
+            <td style="text-align: right; height: 5px;">
+            </td>
+            <td colspan="2" style="height: 5px; text-align: right">
+                <table style="width: 100%">
+                    <tr>
+                        <td valign="top" style="height: 15px">
+                <asp:Button ID="btnContinuar" runat="server" OnClick="btnContinuar_Click" Text="Continuar"
+                    Width="68px" BackColor="DarkGray" BorderStyle="Solid" BorderWidth="0px" Font-Size="10pt" ValidationGroup="procesa" /></td>
+                        <td style="height: 15px">
+                            <asp:Button ID="btnCaida" runat="server" OnClick="btnCaida_Click" Text="Caida" Visible="False" BackColor="DarkGray" BorderStyle="Solid" BorderWidth="0px" ValidationGroup="procesa" /></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <asp:Label ID="lblMensaje" runat="server" Font-Size="10pt" Font-Bold="True" ForeColor="#CC0033" Width="713px"></asp:Label></td>
+            <td style="text-align: right; width: 155px;" valign="top" align="right">
+                <asp:Label ID="lblEtiquetaOC" runat="server" Font-Bold="True" Font-Size="10pt" Text="Orden de Compra:"
+                    Visible="False" Width="133px"></asp:Label>&nbsp;
+            </td>
+            <td rowspan="1" valign="top" align="left">
+                <asp:Label ID="lblOrdenCompra2" runat="server" Font-Bold="True" Font-Size="11pt"
+                    Visible="False"></asp:Label></td>
+        </tr>
+    </table>
+    &nbsp;
+</asp:Content>
+

@@ -1,0 +1,1343 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class OrdenesCompra_listadoOrdenesCompra : System.Web.UI.Page
+{
+    private static int NUMFUNCION = 20;
+    int intNumeroPartida = 0;
+    Double DblTotal = 0.0;
+    Boolean blnEditarProveedor;
+    int intConteoPartidas;
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            blnEditarProveedor = false;
+            lstRazonSocial.Items.Add("OTRO");
+        }
+
+        String error = Utilis.validaPermisos(Session, NUMFUNCION);
+        if (!error.Equals(""))
+        {
+            Response.Redirect(error);
+        }
+
+        //Permiso para generar OC de otro Agente.
+        error = Utilis.validaPermisos(Session, 40);
+        if (error.Equals(""))
+        {
+            lstAgenteOficina.Visible = true;
+            lblUsuario.Visible = true;
+        }
+        
+        lblFecha.Text = DateTime.Now.ToString("d");
+
+        if (Request["ordenCompraId"] != null && !IsPostBack)
+        {
+            //GridView1.Columns[9].Visible = true; // Folios
+
+            OrdenCompraBL OCBL = new OrdenCompraBL();
+            OrdenCompraVO OCVO = new OrdenCompraVO();
+            OCVO.Operacion = OrdenCompraVO.BUSCAR;
+            OCVO.OrdenCompraId = Int32.Parse(Request["ordenCompraId"].ToString());
+            OCVO = (OrdenCompraVO)OCBL.execute(OCVO);
+
+            lblFecha.Text = OCVO.FechaAlta.ToString("d");
+            txtFechaEntrega.Text = OCVO.FechaEntrega;
+            txtContacto.Text = OCVO.Contacto;
+            txtViaEmbarque.Text = OCVO.ViaEmbarque;
+            txtFob.Text = OCVO.Fob;
+            lstMoneda.SelectedValue = OCVO.MonedaId.ToString();
+            txtProyecto.Text = OCVO.NombreProyecto;
+
+            desactivaClasificacionOC();
+
+            if (OCVO.NombreJob.Trim().Length > 0)
+                {
+                txtJob.Visible = true;
+                txtJob.Text = OCVO.NombreJob;
+                lblEtiJob.Visible = true;
+                RegularExpressionValidator9.Enabled = true;
+                RequiredFieldValidator9.Enabled = true;
+                lstClasificacionOC.SelectedValue = "1";
+                }
+
+            if (OCVO.OrdenServicio.Trim().Length > 0)
+                {
+                txtOrdenServicio.Text = OCVO.OrdenServicio;
+                lblEtiOS.Visible = true;
+                txtOrdenServicio.Visible = true;
+                RegularExpressionValidator10.Enabled = true;
+                RequiredFieldValidator8.Enabled = true;
+                lstClasificacionOC.SelectedValue = "2";
+                }
+
+            if (OCVO.OtroClasificacionOC.Trim().Length > 0)
+                {
+                txtOtroClasificacion.Text = OCVO.OtroClasificacionOC;
+                lblEspeOtro.Visible = true;
+                txtOtroClasificacion.Visible = true;
+                RequiredFieldValidator7.Enabled = true;
+                lstClasificacionOC.SelectedValue = "3";
+                }
+
+            txtDescuento.Text = OCVO.PorcentajeDescuento.ToString("F2");
+            txtEnvio.Text = OCVO.CostoEnvio.ToString("F2");
+            txtImpuesto.Text = OCVO.PorcentajeImpuesto.ToString("F2");
+            txtImpuestoImportacion.Text = OCVO.CostoImportacion.ToString("F2");
+            txtDatosTransferencia.Text = OCVO.DatosTransferencia;
+            txtIntruccionesEmbarque.Text = OCVO.InstruccionesEmbarque;
+            txtTerminos.Text = OCVO.Terminos;
+            lstEstatus.SelectedValue = OCVO.EstatusOrdenCompraId.ToString();
+            //txtFactura.Text = OCVO.Factura;
+            txtPedimento.Text = OCVO.Pedimento;
+            txtFechaPedimento.Text = OCVO.FechaPedimento;
+
+
+            lstOrigen.SelectedValue = OCVO.OrigenId.ToString();
+            if (OCVO.OrigenId==2)//Internacional
+                {
+                lblEtiRFC.Text = "TAX ID:";
+                camposBancoInterVisibles(true, false);
+                }
+
+            txtAccountName.Text = OCVO.AccountName;
+            txtAddress.Text = OCVO.Address;
+            txtAccountNumber.Text = OCVO.AccountNumber;
+            txtBankName.Text = OCVO.BankName;
+            txtBankAddress.Text =OCVO.BankAddress;
+            txtAba.Text = OCVO.Aba;
+            lstRazonSocial.SelectedValue = OCVO.ProveedorId.ToString();
+
+            lblEtiquetaOrdenCompra.Visible = true;
+            lblOrdenCompra.Visible = true;
+            lblOrdenCompraOculto.Text = Request["ordenCompraId"].ToString();
+            lblOrdenCompra.Text = (OCVO.OrigenId == 1 ? "N-" + OCVO.IdNacional.ToString() : "I-" + OCVO.IdInternacional.ToString());//Request["ordenCompraId"].ToString();
+            lblOrdenCompra2.Text = lblOrdenCompra.Text;//Request["ordenCompraId"].ToString();
+
+
+            if (OCVO.DocRecibido == 1)
+                ckbDocRecibido.Checked = true;
+
+            if (OCVO.PagoDeContado == 1)
+                ckbPagodeContado.Checked = true;
+
+            // determinar si el usuario tiene los permisos para modificar el campo de factura y Estatus.
+            String error2 = Utilis.validaPermisos(Session, 21);
+            if (error2.Equals(""))
+            {
+                txtFolio.Enabled = true;
+                btnAgregar.Enabled = true;
+
+                lstEstatus.Enabled = true;
+                lblFactura.Enabled = true;
+                lblEstatus.Enabled = true;
+                lblOtroDocumento.Enabled = true;
+                txtOtroDocumento.Enabled = true;
+                ckbDocRecibido.Enabled = true;
+            }
+
+            lstOrigen.Enabled = false;
+
+            //---
+            ProveedoresBL BL = new ProveedoresBL();
+            ProveedoresVO VO = new ProveedoresVO();
+            VO.Operacion = ProveedoresVO.BUSCAR;
+            VO.ProveedorId = OCVO.ProveedorId;
+            VO = (ProveedoresVO)BL.execute(VO);
+
+            if (txtColonia.Text == "")
+                txtColonia.Text = VO.Representante;
+
+            //if(VO.EnSistemaAdm==0)
+            //{
+                //txtNombreProveedor.Text = VO.Nombre;
+                txtNombreProveedor.Text = "";
+                txtNombreProveedor.Visible = false;
+                txtRFC.Text = VO.Rfc;
+            //}
+            //else
+            //{
+            //lblRFC.Text = VO.Rfc;
+            //}
+
+            lblDireccionId.Text = VO.DireccionId.ToString();
+            DireccionesBL DBL = new DireccionesBL();
+            DireccionesVO DVO = new DireccionesVO();
+            DVO.Operacion = DireccionesVO.BUSCAR;
+            DVO.DireccionId = VO.DireccionId;
+            DVO = (DireccionesVO)DBL.execute(DVO);
+
+            //if(VO.EnSistemaAdm==0)
+            //{
+                muestraCamposProveedor();
+                txtNombreProveedor.Visible = false;
+                rfvNombreProveedor.Enabled = false;
+
+                txtDireccionProveedor.Text = DVO.Calle;
+                txtColonia.Text = DVO.Colonia.Trim();
+                txtCpProveedor.Text = DVO.Cp;
+                txtCiudadProveedor.Text = DVO.Ciudad;
+                txtEstadoProveedor.Text = DVO.Estado;
+                txtEmail.Text = DVO.Email;
+                txtFaxProveedor.Text = DVO.Fax;
+                txtTelefonoProveedor.Text = DVO.Telefono1;
+            //}
+            //else
+            //{
+            //    lblDireccion.Text = DVO.Calle;
+            //    lblCiudad.Text = DVO.Ciudad;
+            //    lblEstado.Text = DVO.Estado;
+            //    lblCP.Text = DVO.Cp;
+            //    lblEmail.Text = DVO.Email;
+            //    txtEmail.Text = DVO.Email;
+            //    lblTelefono.Text = DVO.Telefono1;
+            //    lblFax.Text = DVO.Fax;
+            //}
+
+            lblEmail.Visible = false;
+            //btnCaida.Visible = true;
+
+            lkbNuevaOC.Visible = true;
+
+            if (lstAgenteOficina != null)
+            {
+                lstAgenteOficina.Visible = false;
+                lblUsuario.Visible = false;
+            }
+        }
+        else
+        {
+            //Session["DetalleId"] = "";
+            //Session["Cantidad"] = "";
+            //Session["Descripcion"] = "";
+            //Session["PrecioUnitario"] = "";
+        }
+    }
+
+
+    //protected void imgCalendario_Click(object sender, ImageClickEventArgs e)
+    //{
+    //    cldFechaEntrega.Visible = true;
+    //    imgCalendario.Visible = false;
+
+    //    if (txtFechaEntrega.Text != "")
+    //    {
+    //        cldFechaEntrega.SelectedDate = System.DateTime.Parse(txtFechaEntrega.Text);
+    //    }
+    //}
+
+    //protected void cldFechaEntrega_SelectionChanged(object sender, EventArgs e)
+    //{
+    //    txtFechaEntrega.Text = cldFechaEntrega.SelectedDate.Date.ToString("d");
+    //    cldFechaEntrega.Visible = false;
+    //    imgCalendario.Visible = true;
+    //}
+    protected void btnAgregar_Click1(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void lstRazonSocial_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if(lstRazonSocial.SelectedItem.ToString() == "OTRO")
+        {
+            blnEditarProveedor = true;
+            lstRazonSocial.Visible = false;
+            limpiaOcualtaEtiquetas();
+            muestraCamposProveedor();
+        }
+        else
+        {
+        blnEditarProveedor = false;
+
+        muestraCamposProveedor();
+        //ocultarCamposProveedor();
+
+        ProveedoresBL BL = new ProveedoresBL();
+        ProveedoresVO VO = new ProveedoresVO();
+        VO.Operacion = ProveedoresVO.BUSCAR;
+        VO.ProveedorId = Int32.Parse(lstRazonSocial.SelectedItem.Value);
+        VO = (ProveedoresVO)BL.execute(VO);
+
+        txtColonia.Text = VO.Representante;
+            //if(VO.EnSistemaAdm==0)
+            //{
+                //txtNombreProveedor.Text = VO.Nombre;
+                txtNombreProveedor.Text = "";
+                txtNombreProveedor.Visible = false;
+                txtRFC.Text = VO.Rfc;
+            //}
+            //else
+            //{
+            //    lblRFC.Text = VO.Rfc;
+            //}
+
+        DireccionesBL DBL = new DireccionesBL();
+        DireccionesVO DVO = new DireccionesVO();
+        DVO.Operacion = DireccionesVO.BUSCAR;
+        DVO.DireccionId = VO.DireccionId;
+        lblDireccionId.Text = VO.DireccionId.ToString();
+
+        DVO = (DireccionesVO)DBL.execute(DVO);
+
+            //if(VO.EnSistemaAdm==0)
+            //{
+                blnEditarProveedor = true;
+                muestraCamposProveedor();
+                txtNombreProveedor.Visible = false;
+                rfvNombreProveedor.Enabled = false;
+
+                txtDireccionProveedor.Text = DVO.Calle;
+                txtColonia.Text = DVO.Colonia;
+                txtCpProveedor.Text = DVO.Cp;
+                txtCiudadProveedor.Text = DVO.Ciudad;
+                txtEstadoProveedor.Text = DVO.Estado;
+                txtEmail.Text = DVO.Email;
+                txtFaxProveedor.Text = DVO.Fax;
+                txtTelefonoProveedor.Text = DVO.Telefono1;
+            //}
+            //else
+            //{
+            //    blnEditarProveedor = false;
+            //    ocultarCamposProveedor();
+
+            //    lblDireccion.Text = DVO.Calle;
+            //    lblCiudad.Text = DVO.Ciudad;
+            //    lblEstado.Text = DVO.Estado;
+            //    lblCP.Text = DVO.Cp;
+            //    //txtEmail.Visible = true;
+            //    txtEmail.Text = DVO.Email;
+            //    lblEmail.Text = DVO.Email;
+            //    lblTelefono.Text = DVO.Telefono1;|
+            //    lblDireccionId.Text = DVO.DireccionId.ToString();
+            //}
+
+        }
+    }
+
+    protected void btnContinuar_Click(object sender, EventArgs e)
+    {
+
+        TextBox txtCantidad = GridView1.Controls[0].Controls[0].FindControl("txtCantidad") as TextBox;
+        TextBox txtDescripcion = GridView1.Controls[0].Controls[0].FindControl("txtDescripcion") as TextBox;
+        TextBox txtPrecio = GridView1.Controls[0].Controls[0].FindControl("txtPrecio") as TextBox;
+        TextBox txtDescuento2 = GridView1.Controls[0].Controls[0].FindControl("txtDescuento2") as TextBox;
+        TextBox tiempoEntregaPart = GridView1.Controls[0].Controls[0].FindControl("tiempoEntregaPart") as TextBox;
+
+        if (txtDescripcion != null && txtDescripcion.Text.Trim().Length > 0)
+        {
+            string strTmpPrecio = "0";
+            if (txtPrecio.Text.Trim().Length > 0)
+                strTmpPrecio = txtPrecio.Text.Trim();
+
+            funcAgregaPartida(double.Parse(txtCantidad.Text.Trim()), txtDescripcion.Text.Trim().ToUpper(), double.Parse(strTmpPrecio), txtDescuento2.Text.Trim(), 0, tiempoEntregaPart.Text, 0);
+            txtCantidad.Text = "";
+            txtDescripcion.Text = "";
+            txtPrecio.Text = "";
+            txtDescuento2.Text = "";
+            tiempoEntregaPart.Text = "";
+            GridView1.Visible = true;
+            GridView1.DataBind();
+
+            txtCantidad.Dispose();
+            txtDescripcion.Dispose();
+            txtPrecio.Dispose();
+            txtDescuento2.Dispose();
+            tiempoEntregaPart.Dispose();
+
+            calculaDescuento();
+            calculaImpuesto();
+            calculaTotal();
+        }
+
+        if (GridView1.Rows.Count > 0)
+        {
+
+        if(lstRazonSocial.SelectedItem.ToString() == "OTRO")
+            blnEditarProveedor = true;
+
+        OrdenCompraBL OCBL = new OrdenCompraBL();
+        OrdenCompraVO OCVO = new OrdenCompraVO();
+
+        //--------- Alta Dirección
+        if (blnEditarProveedor)
+        {
+                ProveedoresVO PVO = new ProveedoresVO();
+                ProveedoresBL PBL = new ProveedoresBL();
+
+              if (txtNombreProveedor.Text.Trim().Length > 0)
+              {
+                DireccionesVO DVO = new DireccionesVO();
+                DireccionesBL DBL = new DireccionesBL();
+
+                DVO.Operacion = DireccionesVO.INSERTAR;
+                DVO.Calle = txtDireccionProveedor.Text.Trim().ToUpper();
+                DVO.Colonia = txtColonia.Text.Trim().ToUpper();
+                //DVO.NoExterior,
+                //DVO.NoInterior,
+                DVO.Cp = txtCpProveedor.Text.Trim();
+                
+                DVO.Ciudad = txtCiudadProveedor.Text.Trim().ToUpper();
+                DVO.Estado = txtEstadoProveedor.Text.Trim().ToUpper();
+                DVO.Email = txtEmail.Text.Trim().ToUpper();
+                DVO.Fax = txtFaxProveedor.Text.Trim();
+                DVO.Telefono1 = txtTelefonoProveedor.Text.Trim();
+                //DVO.Telefono2,
+                //DVO.Telefono3,
+                //DVO.Telefono4,
+                //DVO.PaginaWeb,
+                //DVO.TipoDomicilio,
+
+                // DVO.UsuarioIdAlta = Int32.Parse(Session["usuarioID"].ToString());
+                // se identifica el usuario con el que se va a guardar la O.C.
+                if (lstAgenteOficina == null)
+                {
+                    DVO.UsuarioIdAlta = Int32.Parse(Session["usuarioID"].ToString());
+                }
+                else
+                {
+                if (lstAgenteOficina.SelectedItem!=null)
+                    {
+                        if (Int32.Parse(lstAgenteOficina.SelectedItem.Value) > 0)
+                        {
+                            DVO.UsuarioIdAlta = Int32.Parse(lstAgenteOficina.SelectedItem.Value);
+                        }
+                        else
+                        {
+                            DVO.UsuarioIdAlta = Int32.Parse(Session["usuarioID"].ToString());
+                        }
+                    }
+                    else
+                    {
+                        DVO.UsuarioIdAlta = Int32.Parse(Session["usuarioID"].ToString());
+                    }
+                }
+
+                DVO = (DireccionesVO)DBL.execute(DVO);
+                if (DVO.Resultado > 0)
+                   {
+                       DVO.DireccionId = (int) DVO.Resultado;
+                       PVO.DireccionId = DVO.DireccionId;
+                   }
+             }
+            else
+             {
+                 PVO.DireccionId = 0;
+             }
+
+            //--------- Alta Proveedor
+            PVO.Nombre = txtNombreProveedor.Text.Trim().ToUpper();
+            PVO.Rfc = txtRFC.Text.Trim().ToUpper();
+            //PVO.Representante, 
+            //PVO.UsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+
+            // se identifica el usuario con el que se va a guardar la O.C.
+            if (lstAgenteOficina == null)
+            {
+                PVO.UsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+            }
+            else
+            {
+                if (lstAgenteOficina.SelectedItem!=null)
+                {
+                    if (Int32.Parse(lstAgenteOficina.SelectedItem.Value) > 0)
+                    {
+                        PVO.UsuarioId = Int32.Parse(lstAgenteOficina.SelectedItem.Value);
+                    }
+                    else
+                    {
+                        PVO.UsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+                    }
+                }
+                else
+                {
+                    PVO.UsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+                }
+            }
+
+            PVO.Operacion = ProveedoresVO.INSERTAR;
+            PVO = (ProveedoresVO)PBL.execute(PVO);
+            if (PVO.Resultado > 0)
+            {
+                PVO.ProveedorId = (int) PVO.Resultado;
+                OCVO.ProveedorId = PVO.ProveedorId;
+            }
+        }
+        else
+        {
+            OCVO.ProveedorId = Int32.Parse(lstRazonSocial.SelectedItem.Value);
+            //----------------------------------------------------
+            // se actualiza la informacion del proveedor 06122010
+            //----------------------------------------------------
+            // Se guarda el Email
+            DireccionesBL DBL = new DireccionesBL();
+            DireccionesVO DVO = new DireccionesVO();
+            DVO.DireccionId = Int32.Parse(lblDireccionId.Text);
+            DVO.UsuarioIdActualizo = Int32.Parse(Session["usuarioID"].ToString());
+
+            DVO.Calle = txtDireccionProveedor.Text.Trim().ToUpper();
+            DVO.Colonia = txtColonia.Text.Trim().ToUpper();
+            DVO.Cp = txtCpProveedor.Text.Trim();
+            DVO.Ciudad = txtCiudadProveedor.Text.Trim().ToUpper();
+            DVO.Estado = txtEstadoProveedor.Text.Trim().ToUpper();
+            DVO.Email = txtEmail.Text.Trim().ToUpper();
+            DVO.Fax = txtFaxProveedor.Text.Trim();
+            DVO.Telefono1 = txtTelefonoProveedor.Text.Trim();
+
+            //---
+            DVO.Operacion = DireccionesVO.ACTUALIZAR;
+            DVO = (DireccionesVO)DBL.execute(DVO);
+            if (OCVO.Resultado == 0)
+            {
+            }
+            //-----------
+            ProveedoresVO PVO = new ProveedoresVO();
+            ProveedoresBL PBL = new ProveedoresBL();
+
+            //--------- Actualiza Proveedor
+            PVO.ProveedorId = Int32.Parse(lstRazonSocial.SelectedItem.Value);
+            PVO.Nombre = txtNombreProveedor.Text.Trim().ToUpper();
+            PVO.Rfc = txtRFC.Text.Trim().ToUpper();
+            PVO.Representante = txtColonia.Text.Trim().ToUpper();
+            PVO.UsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+            PVO.Operacion = ProveedoresVO.ACTUALIZAR;
+            PVO = (ProveedoresVO)PBL.execute(PVO);
+            if (PVO.Resultado >= 0)
+            {
+            }
+
+            //----------------------------------------------------
+            //----------------------------------------------------
+        }
+        //---------------
+
+        
+
+        OCVO.FechaEntrega = txtFechaEntrega.Text.Trim();
+        OCVO.Contacto = txtContacto.Text.ToUpper().Trim();
+        OCVO.ViaEmbarque = txtViaEmbarque.Text.ToUpper().Trim();
+        OCVO.Fob = txtFob.Text.ToUpper().Trim();
+
+        OCVO.MonedaId = Int32.Parse(lstMoneda.SelectedItem.Value);
+        OCVO.NombreProyecto = txtProyecto.Text.ToUpper().Trim();
+        OCVO.NombreJob = txtJob.Text.ToUpper().Trim();
+        OCVO.PorcentajeDescuento = Double.Parse(txtDescuento.Text);
+        OCVO.CostoEnvio = Double.Parse(txtEnvio.Text);
+        OCVO.PorcentajeImpuesto = Double.Parse(txtImpuesto.Text);
+        OCVO.CostoImportacion = Double.Parse(txtImpuestoImportacion.Text);
+        OCVO.DatosTransferencia = txtDatosTransferencia.Text.ToUpper().Trim();
+        OCVO.InstruccionesEmbarque = txtIntruccionesEmbarque.Text.ToUpper().Trim();
+        OCVO.Terminos = txtTerminos.Text.ToUpper().Trim();
+        OCVO.EstatusOrdenCompraId = Int32.Parse(lstEstatus.SelectedItem.Value);
+        OCVO.Factura = "";//txtFactura.Text;
+        OCVO.OrigenId = Int32.Parse(lstOrigen.SelectedItem.Value);
+        OCVO.AccountName = txtAccountName.Text;
+        OCVO.Address = txtAddress.Text;
+        OCVO.AccountNumber = txtAccountNumber.Text;
+        OCVO.BankName = txtBankName.Text;
+        OCVO.BankAddress = txtBankAddress.Text;
+        OCVO.Aba = txtAba.Text;
+        OCVO.OrdenServicio = txtOrdenServicio.Text.ToUpper().Trim();
+        OCVO.Pedimento = txtPedimento.Text.ToUpper().Trim();
+        OCVO.FechaPedimento = txtFechaPedimento.Text.Trim();
+        OCVO.OtroClasificacionOC = txtOtroClasificacion.Text.Trim();
+
+        OCVO.DocRecibido = 0;
+        if (ckbDocRecibido.Checked)
+            OCVO.DocRecibido=1;
+
+        OCVO.PagoDeContado = 0;
+        if (ckbPagodeContado.Checked)
+            OCVO.PagoDeContado = 1;
+        
+        //if (Request["ordenCompraId"] == null )
+        if (lblOrdenCompraOculto.Text.Trim().Length == 0)
+        {
+
+            OCVO.Operacion = OrdenCompraVO.INSERTAR;
+            
+            // se identifica el usuario con el que se va a guardar la O.C.
+            if(lstAgenteOficina==null)
+                {
+                    OCVO.UsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+                }
+            else
+                {
+                    if (lstAgenteOficina.SelectedItem!=null)
+                    {
+                        if (Int32.Parse(lstAgenteOficina.SelectedItem.Value) > 0)
+                        {
+                            OCVO.UsuarioId = Int32.Parse(lstAgenteOficina.SelectedItem.Value);
+                        }
+                        else
+                        {
+                            OCVO.UsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+                        }
+                    }
+                    else
+                    {
+                        OCVO.UsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+                    }
+                }
+
+            OCVO = (OrdenCompraVO)OCBL.execute(OCVO);
+            if (OCVO.Resultado > 0)
+            {
+                btnContinuar.Visible = false;
+                // -----------------------------------
+
+                DetalleOrdenCompraBL DOCBL = new DetalleOrdenCompraBL();
+                DetalleOrdenCompraVO DOCVO = new DetalleOrdenCompraVO();
+                DOCVO.Operacion = DetalleOrdenCompraVO.ACTUALIZA_ID_DETALLEORDENCOMPRA;
+                DOCVO.OrdenCompraId = (int)OCVO.Resultado;
+                DOCVO.UsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+                DOCVO = (DetalleOrdenCompraVO)DOCBL.execute(DOCVO);
+                if (DOCVO.Resultado > 0)
+                    {
+                    }
+
+                // -----------------------------------
+                lblMensaje.Text = "LOS DATOS SE INSERTARON CORRECTAMENTE.";
+                //btnContinuar.Visible = false;
+                btnCaida.Visible = true;
+                lblEtiquetaOrdenCompra.Visible = true;
+                
+                lblOrdenCompra.Visible = true;
+                lblOrdenCompra.Text = OCVO.Resultado.ToString();
+                lblOrdenCompraOculto.Text = lblOrdenCompra.Text;
+
+                OCVO.Operacion = OrdenCompraVO.BUSCAR;
+                OCVO.OrdenCompraId = Int32.Parse(lblOrdenCompra.Text);
+                OCVO = (OrdenCompraVO)OCBL.execute(OCVO);
+                lblOrdenCompra.Text = (OCVO.OrigenId == 1 ? "N-" + OCVO.IdNacional.ToString() : "I-" + OCVO.IdInternacional.ToString());//Request["ordenCompraId"].ToString();
+
+                lblEtiquetaOC.Visible = true;
+                lblOrdenCompra2.Visible = true;
+                lblOrdenCompra2.Text = lblOrdenCompra.Text;//OCVO.Resultado.ToString();
+
+                // Mandar correo.
+                InfoSessionVO infoSession;
+                infoSession = (InfoSessionVO)Session["InfoSession"];
+
+                string strMensajeCorreo = "";
+                strMensajeCorreo = Mail.sendMail("ismael.rojas@calvek.com", 
+                               "Sistema Ordenes de Compra",
+                               System.Configuration.ConfigurationManager.AppSettings["correoOrdenesCompra"].ToString(), // "ismael.rojas@calvek.com", //"norma.martinez@calvek.com",
+                               "Laura Rangel-Calvek",
+                               "",
+                               "",
+                               "",
+                               "",
+                               "Nueva solicitud Orden de Compra",
+                               "<p>Orden de Compra de:" + infoSession.getValor(InfoSessionVO.NOMBRECOMPLETO).ToString() + 
+                               " <BR>Numero: " + lblOrdenCompra.Text + 
+                               " <BR>Fecha: " + lblFecha.Text + 
+                               " <BR>Proveedor: " + lstRazonSocial.SelectedItem.Text +
+                               " <BR>Cantidad: " + lblTotal.Text + " " + lstMoneda.SelectedItem.Text +
+                               " <BR>Datos de Transferencia: " + txtDatosTransferencia.Text + "</p>"
+                               ,true);
+
+                if(strMensajeCorreo.Length > 0)
+                  {
+                      Mail.sendMail("ismael.rojas@calvek.com",
+                                 "sistema Ordenes de compra",
+                                 "ismael.rojas@calvek.com", //"ana.alonso@calvek.com",
+                                 "Irojas-Calvek",
+                                 "",
+                                 "",
+                                 "",
+                                 "",
+                                 "Error en Nueva solicitud Orden de Compra",
+                                 strMensajeCorreo
+                                 , true);
+                  }
+
+            }
+        }
+        else
+        {
+            OCVO.Operacion = OrdenCompraVO.ACTUALIZAR;
+            OCVO.UsuarioIdActualizo = Int32.Parse(Session["usuarioID"].ToString());
+            //OCVO.OrdenCompraId=Int32.Parse(Request["ordenCompraId"].ToString());
+            OCVO.OrdenCompraId = Int32.Parse(lblOrdenCompraOculto.Text.Trim());
+            
+            OCVO = (OrdenCompraVO)OCBL.execute(OCVO);
+            if (OCVO.Resultado == 0)
+            {
+                lblMensaje.Text = "LOS DATOS SE ACTUALIZARON CORRECTAMENTE.";
+                //btnContinuar.Visible = false;
+            }
+
+            // Se guarda el Email
+            DireccionesBL DBL = new DireccionesBL();
+            DireccionesVO DVO = new DireccionesVO();
+            DVO.DireccionId = Int32.Parse(lblDireccionId.Text);
+            //DVO.Email = txtEmail.Text.Trim();
+            DVO.UsuarioIdActualizo = Int32.Parse(Session["usuarioID"].ToString());
+
+            DVO.Calle = txtDireccionProveedor.Text.Trim().ToUpper();
+            DVO.Colonia = txtColonia.Text.Trim().ToUpper();
+            DVO.Cp = txtCpProveedor.Text.Trim();
+            DVO.Ciudad = txtCiudadProveedor.Text.Trim().ToUpper();
+            DVO.Estado = txtEstadoProveedor.Text.Trim().ToUpper();
+            DVO.Email = txtEmail.Text.Trim().ToUpper();
+            DVO.Fax = txtFaxProveedor.Text.Trim();
+            DVO.Telefono1 = txtTelefonoProveedor.Text.Trim();
+           
+
+            //---
+            DVO.Operacion = DireccionesVO.ACTUALIZAR;
+            DVO = (DireccionesVO)DBL.execute(DVO);
+            if (DVO.Resultado == 0)
+            {
+            }
+            //-----------
+            ProveedoresVO PVO = new ProveedoresVO();
+            ProveedoresBL PBL = new ProveedoresBL();
+
+            //--------- Actualiza Proveedor
+            PVO.ProveedorId = Int32.Parse(lstRazonSocial.SelectedItem.Value);
+            PVO.Nombre = txtNombreProveedor.Text.Trim().ToUpper();
+            PVO.Rfc = txtRFC.Text.Trim().ToUpper();
+            PVO.Representante = txtColonia.Text.Trim().ToUpper();
+            PVO.UsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+            PVO.Operacion = ProveedoresVO.ACTUALIZAR;
+            PVO = (ProveedoresVO)PBL.execute(PVO);
+            if (PVO.Resultado >= 0)
+            {
+            }
+
+            //-----------
+            if (GridView1.Rows.Count > 0)
+            {
+                Response.Redirect("CaidaOrdenCompra.aspx?ordenCompraId=" + lblOrdenCompraOculto.Text);
+            }
+            //-----------
+        }
+
+    }
+    else
+        {
+        Page.Validate("partidaAlterna");
+        }
+    //}
+    }
+
+    protected void txtDescuento_TextChanged(object sender, EventArgs e)
+    {
+        if (txtDescuento.Text.Trim() == "")
+        {
+            txtDescuento.Text = "0";
+            lblDescuento.Text = "0.0";
+        }
+        calculaDescuento();
+        calculaTotal();
+    }
+    protected void txtEnvio_TextChanged(object sender, EventArgs e)
+    {
+        if (txtEnvio.Text.Trim() == "")
+        {
+            txtEnvio.Text = "0.0";
+        }
+        calculaImpuesto();
+        calculaTotal();
+    }
+    protected void txtImpuesto_TextChanged(object sender, EventArgs e)
+    {
+        if (txtImpuesto.Text.Trim() == "")
+        {
+            txtImpuesto.Text = "16";
+        }
+        calculaImpuesto();
+        calculaTotal();
+    }
+
+    protected void txtImpuestoImportacion_TextChanged(object sender, EventArgs e)
+    {
+        if (txtImpuestoImportacion.Text.Trim() == "")
+        {
+            txtImpuestoImportacion.Text = "0.0";
+        }
+        calculaImpuesto();
+        calculaTotal();
+    }
+    protected void calculaTotal()
+    {
+        try
+        {
+            Double dblTotal = 0;
+            dblTotal = Math.Round(((Double.Parse(lblSubtotal.Text) + Double.Parse(txtEnvio.Text) + Double.Parse(lblImpuesto.Text) + Double.Parse(txtImpuestoImportacion.Text)) - Double.Parse(lblDescuento.Text)), 2);
+            lblTotal.Text = String.Format("{0:#,##0.00}", dblTotal);//dblTotal.ToString();
+            lblMensaje.Text = "";
+        }
+        catch (Exception e)
+        {
+            lblMensaje.Text = "Ocurrio un error de captura";
+        }
+    }
+    protected void calculaImpuesto()
+    {
+        try
+        {
+        Double dblImpuesto = 0;
+        dblImpuesto = Math.Round(((Double.Parse(txtImpuesto.Text) / 100) * ((Double.Parse(lblSubtotal.Text) + Double.Parse(txtEnvio.Text)) - Double.Parse(lblDescuento.Text))), 2);
+        lblImpuesto.Text = String.Format("{0:#,##0.00}", dblImpuesto);//dblImpuesto.ToString();
+        lblMensaje.Text = "";
+        }
+        catch (Exception e)
+        {
+            lblMensaje.Text = "Ocurrio un error de captura";
+        }
+    }
+
+    protected void calculaDescuento()
+    {
+        try
+        {
+        Double DblDescuento = 0;
+        DblDescuento = Math.Round((Double.Parse(txtDescuento.Text) / 100) * Double.Parse(lblSubtotal.Text), 2);
+        lblDescuento.Text = String.Format("{0:#,##0.00}", DblDescuento);//DblDescuento.ToString();
+        lblMensaje.Text = "";
+        }
+        catch (Exception e)
+        {
+            lblMensaje.Text = "Ocurrio un error de captura";
+        }
+
+    }
+    protected void btnCaida_Click(object sender, EventArgs e)
+    {
+        if (GridView1.Rows.Count > 0)
+        {
+        Response.Redirect("CaidaOrdenCompra.aspx?ordenCompraId=" + lblOrdenCompraOculto.Text);
+        }
+        else
+        {
+            Page.Validate("partidaAlterna");
+        }
+
+    }
+
+    public int get_numeroPartida()
+    {
+        intNumeroPartida += 1;
+        return intNumeroPartida;
+    }
+
+    public Double Get_Amount(Double Total)
+    {
+        DblTotal += Total;
+        lblSubtotal.Text = String.Format("{0:#,##0.00}", Math.Round(DblTotal, 2)); //Math.Round(DblTotal, 2).ToString("C2");
+        calculaDescuento();
+        calculaImpuesto();
+        calculaTotal();
+        return Total;
+    }
+
+    protected void OrdenCompras_Command(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "Borrar")
+            {
+                SqlDataSource1.DeleteParameters[0].DefaultValue = e.CommandArgument.ToString();
+                SqlDataSource1.DeleteParameters[1].DefaultValue = lblOrdenCompraOculto.Text;
+                SqlDataSource1.DeleteParameters[2].DefaultValue = Session["usuarioID"].ToString();
+                SqlDataSource1.Delete();
+            }
+        }
+
+    protected void OrdenCompras_Deleting(object sender, GridViewDeleteEventArgs e)
+        {
+        int detalleOrdenCompraID = (int)GridView1.DataKeys[e.RowIndex].Value;
+             lblMensaje.Text = "detalleOrdenCompraID:" + detalleOrdenCompraID.ToString();
+        }
+
+    protected void btnAgregar_Click(object sender, EventArgs e)
+    {
+        //lblMensaje.Text = ((DropDownList)GridView1.FooterRow.FindControl("tipoDetalleOrdenCompraId2")).SelectedItem.Value;
+        funcAgregaPartida(double.Parse(((TextBox)GridView1.FooterRow.FindControl("txtCantidad")).Text), ((TextBox)GridView1.FooterRow.FindControl("txtDescripcion")).Text.ToUpper(), double.Parse(((TextBox)GridView1.FooterRow.FindControl("txtPrecio")).Text), ((TextBox)GridView1.FooterRow.FindControl("txtDescuento")).Text, 0, ((TextBox)GridView1.FooterRow.FindControl("txtFechaEntrega")).Text, 0);
+
+        ((TextBox)GridView1.FooterRow.FindControl("txtCantidad")).Text = "";
+        ((TextBox)GridView1.FooterRow.FindControl("txtDescripcion")).Text = "";
+        ((TextBox)GridView1.FooterRow.FindControl("txtPrecio")).Text = "";
+        ((TextBox)GridView1.FooterRow.FindControl("txtDescuento")).Text = "";
+        //((DropDownList)GridView1.FooterRow.FindControl("tipoDetalleOrdenCompraId2")).SelectedIndex = 0;
+        ((TextBox)GridView1.FooterRow.FindControl("txtFechaEntrega")).Text = "";
+
+        GridView1.DataBind();
+    }
+
+
+    protected void Grid_RowCreated(object sender, GridViewRowEventArgs e)
+    {
+        //Boolean blnBandera = true;
+        
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            intConteoPartidas++;
+        }
+
+    }
+
+    protected void GridView2_DataBound(object sender, EventArgs e)
+    {
+        if (GridView2.Rows.Count <= 0 )
+            {        
+            txtFolio.Visible = true;
+            btnAgregar.Visible = true;
+            GridView2.Visible = false;
+            }
+        else
+            {
+            txtFolio.Visible = false;
+            btnAgregar.Visible = false;
+            GridView2.Visible = true;
+            }
+    }
+
+    protected void btnAgregar_Click2(object sender, EventArgs e)
+    {
+        funcAgregaFolioOrdenCompra(((TextBox)GridView2.FooterRow.FindControl("Folio")).Text,Int32.Parse(Session["usuarioID"].ToString()));
+         ((TextBox)GridView2.FooterRow.FindControl("Folio")).Text = "";
+        GridView2.DataBind();
+    }
+    protected void lnkNuevo_Click(object sender, EventArgs e)
+    {
+        ((Button)GridView2.FooterRow.FindControl("btnAgregar")).Visible = true;
+        ((TextBox)GridView2.FooterRow.FindControl("Folio")).Visible = true;
+        ((LinkButton)GridView2.FooterRow.FindControl("lnkNuevo")).Visible = false;
+    }
+
+    protected void btnAgregar_Click4(object sender, EventArgs e)
+    {
+        txtFolio.Visible = false;
+        btnAgregar.Visible = false;
+        funcAgregaFolioOrdenCompra(txtFolio.Text, Int32.Parse(Session["usuarioID"].ToString()));
+        txtFolio.Text = "";
+        GridView2.Visible = true;
+        GridView2.DataBind();
+    }
+    
+    protected void GridView1_DataBound(object sender, EventArgs e)
+    {
+        //if (GridView1.Rows.Count <= 0)
+        //{
+        //    camposPartidasVisibles(true);
+        //    GridView1.Visible = false;
+        //}
+        //else
+        //{
+        //    camposPartidasVisibles(false);
+        //    GridView1.Visible = true;
+        //}
+    }
+
+    protected void btnAgregar2_Click(object sender, EventArgs e)
+    {
+        TextBox txtCantidad = GridView1.Controls[0].Controls[0].FindControl("txtCantidad") as TextBox;
+        TextBox txtDescripcion = GridView1.Controls[0].Controls[0].FindControl("txtDescripcion") as TextBox;
+        TextBox txtPrecio = GridView1.Controls[0].Controls[0].FindControl("txtPrecio") as TextBox;
+        TextBox txtDescuento2 = GridView1.Controls[0].Controls[0].FindControl("txtDescuento2") as TextBox;
+        TextBox tiempoEntregaPart = GridView1.Controls[0].Controls[0].FindControl("tiempoEntregaPart") as TextBox;
+
+
+        funcAgregaPartida(double.Parse(txtCantidad.Text), txtDescripcion.Text.ToUpper(), double.Parse(txtPrecio.Text), txtDescuento2.Text, 0, tiempoEntregaPart.Text, 0);
+
+        txtCantidad.Text = "";
+        txtDescripcion.Text = "";
+        txtPrecio.Text = "";
+        txtDescuento2.Text = "";
+        //tipoDetalle.SelectedIndex = 0;
+        tiempoEntregaPart.Text = "";
+
+        txtCantidad.Dispose();
+        txtDescripcion.Dispose();
+        txtPrecio.Dispose();
+        txtDescuento2.Dispose();
+        tiempoEntregaPart.Dispose();
+
+        GridView1.Visible = true;
+        GridView1.DataBind();
+    }
+
+    protected Boolean funcAgregaPartida(double intCantidad, string strDescripcion, double dblPrecioUnitario, string strDescuento, int intTipo,string strTiempoEntrega,int intBanderaExceptoIva)
+    {
+
+        DetalleOrdenCompraBL DOCBL = new DetalleOrdenCompraBL();
+        DetalleOrdenCompraVO DOCVO = new DetalleOrdenCompraVO();
+        DOCVO.Operacion = DetalleOrdenCompraVO.INSERTAR;
+
+        if (Request["ordenCompraId"] != null)
+        {
+            DOCVO.OrdenCompraId = Int32.Parse(Request["ordenCompraId"].ToString());
+        }
+        else
+        {
+            DOCVO.OrdenCompraId = 0;
+        }
+
+        DOCVO.Cantidad = intCantidad;
+        DOCVO.Descripcion = strDescripcion;
+        DOCVO.PrecioUnitario = dblPrecioUnitario;
+        DOCVO.UsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+        DOCVO.TipoDetalleOrdenCompraId = intTipo;
+
+        if (strTiempoEntrega.Trim().Length == 0)
+        {
+            DOCVO.FechaEntrega = txtFechaEntrega.Text;
+        }
+        else
+        {
+            DOCVO.FechaEntrega = strTiempoEntrega;
+        }
+        DOCVO.TiempoEntrega = "";//strTiempoEntrega;
+        DOCVO.BanderaExceptoIva = intBanderaExceptoIva;
+
+        if (strDescuento.Trim().Length > 0)
+        {
+            DOCVO.Descuento = double.Parse(strDescuento);
+        }
+        else
+        {
+            DOCVO.Descuento = 0;
+        }
+
+        DOCVO = (DetalleOrdenCompraVO)DOCBL.execute(DOCVO);
+
+        if (DOCVO.Resultado > 0)
+            {return true;}
+        else
+            {return false;}
+    }
+
+    protected Boolean funcAgregaFolioOrdenCompra(string strFolio, int intUsuarioId)
+    {
+        OrdenCompraBL OCBL = new OrdenCompraBL();
+        OrdenCompraVO OCVO = new OrdenCompraVO();
+        OCVO.Operacion = OrdenCompraVO.INSERTAR_FOLIOFACTURA;
+        OCVO.OrdenCompraId = Int32.Parse(Request["ordenCompraId"].ToString());
+        OCVO.FolioFacturaCompra = strFolio.ToUpper();
+        OCVO.UsuarioId = intUsuarioId;
+        OCVO = (OrdenCompraVO)OCBL.execute(OCVO);
+        if (OCVO.Resultado > 0)
+        { return true; }
+        else
+        { return false; }
+    }
+
+    public void muestraCamposProveedor()
+    {
+        txtNombreProveedor.Visible = true;
+        txtDireccionProveedor.Visible = true;
+        txtColonia.Visible = true;
+        txtCiudadProveedor.Visible = true;
+        txtEstadoProveedor.Visible = true;
+        txtCpProveedor.Visible = true;
+        txtEmail.Visible = true;
+        txtEmail.Text = "";
+        txtTelefonoProveedor.Visible = true;
+        txtFaxProveedor.Visible = true;
+        rfvNombreProveedor.Enabled = true;
+        txtRFC.Visible = true;
+    }
+
+    public void ocultarCamposProveedor()
+    {
+        txtNombreProveedor.Visible = false;
+        txtDireccionProveedor.Visible = false;
+        txtColonia.Visible = false;
+        txtCiudadProveedor.Visible = false;
+        txtEstadoProveedor.Visible = false;
+        txtCpProveedor.Visible = false;
+        txtEmail.Visible = false;
+        txtTelefonoProveedor.Visible = false;
+        txtFaxProveedor.Visible = false;
+        rfvNombreProveedor.Enabled = false;
+        txtRFC.Visible = false;
+
+        txtNombreProveedor.Text = "";
+        txtDireccionProveedor.Text = "";
+        txtCiudadProveedor.Text = "";
+        txtEstadoProveedor.Text = "";
+        txtCpProveedor.Text = "";
+        txtEmail.Text = "";
+        txtTelefonoProveedor.Text = "";
+        txtFaxProveedor.Text = "";
+        txtRFC.Text = "";
+    }
+
+    public void limpiaOcualtaEtiquetas()
+    {
+        lblDireccion.Text = "";
+        lblColonia.Text = "";
+        lblCiudad.Text = "";
+        lblEstado.Text = "";
+        lblCP.Text = "";
+        lblEmail.Text = "";
+        lblTelefono.Text = "";
+        lblFax.Text = "";
+        lblRFC.Text = "";
+
+        lblDireccion.Visible = false;
+        lblColonia.Visible = false;
+        lblDireccionId.Text = "0";
+        lblCiudad.Visible = false;
+        lblEstado.Visible = false;
+        lblCP.Visible = false;
+        lblEmail.Visible = false;
+        lblTelefono.Visible = false;
+        lblFax.Visible = false;
+        lblRFC.Visible = false;
+    }
+
+    //public void camposPartidasVisibles( Boolean blnBandera)
+    //{
+    //    txtCantidad.Visible = blnBandera;
+    //    txtDescripcion.Visible = blnBandera;
+    //    txtPrecio.Visible = blnBandera;
+    //    txtDescuento2.Visible = blnBandera;
+    //    lblCantidad.Visible = blnBandera;
+    //    lblDescripcion.Visible = blnBandera;
+    //    lblPrecio.Visible = blnBandera;
+    //    lblDescuento2.Visible = blnBandera;
+    //    lblEditar.Visible = blnBandera;
+    //    btnAgregar2.Visible = blnBandera;
+    //    //tipoDetalle.Visible = blnBandera;
+    //    //lblTipo.Visible = blnBandera;
+    //    lblTiempoEntrega.Visible = blnBandera;
+    //    tiempoEntregaPart.Visible = blnBandera;
+    //}
+
+    public void limpiaPantalla()
+    {
+        ocultarCamposProveedor();
+        lblEstatusOrdenCompra.Text = "";
+        lblDireccionId.Text = "";
+        lblOrdenCompraOculto.Text = "";
+        lblEtiquetaOC.Visible = false;
+        lblEtiquetaOrdenCompra.Visible = false;
+        lblOrdenCompra.Text = "";
+        lblOrdenCompra2.Text = "";
+        lblOrdenCompra.Visible = false;
+        lblOrdenCompra2.Visible = false;
+        lblMensaje.Text = "";
+        lblFecha.Text = DateTime.Now.ToString("d");
+
+        //--
+        lstRazonSocial.Enabled = true;
+        lstRazonSocial.SelectedIndex = 0;
+        txtEmail.Text = "";
+        lstMoneda.SelectedIndex = 0;
+        txtFechaEntrega.Text = "";
+        //cldFechaEntrega.Visible = false;
+        //imgCalendario.Visible = true;
+        txtViaEmbarque.Text = "";
+        txtFob.Text = "";
+        txtJob.Text = "";
+        txtProyecto.Text = "";
+        txtOtroDocumento.Text = "";
+        txtFolio.Text = "";
+        ckbPagodeContado.Checked = false;
+        ckbDocRecibido.Checked = false;
+        lstEstatus.SelectedIndex = 0;
+        txtAccountName.Text = "";
+        txtAddress.Text = "";
+        txtAccountNumber.Text = "";
+        txtBankName.Text = "";
+        txtBankAddress.Text = "";
+        txtAba.Text = "";
+
+        TextBox txtCantidad = GridView1.Controls[0].Controls[0].FindControl("txtCantidad") as TextBox;
+        TextBox txtDescripcion = GridView1.Controls[0].Controls[0].FindControl("txtDescripcion") as TextBox;
+        TextBox txtPrecio = GridView1.Controls[0].Controls[0].FindControl("txtPrecio") as TextBox;
+        TextBox txtDescuento2 = GridView1.Controls[0].Controls[0].FindControl("txtDescuento2") as TextBox;
+        TextBox tiempoEntregaPart = GridView1.Controls[0].Controls[0].FindControl("tiempoEntregaPart") as TextBox;
+
+        txtCantidad.Text = "";
+        txtDescripcion.Text = "";
+        txtPrecio.Text = "";
+        txtDescuento2.Text = "";
+        //if (tipoDetalle!=null)
+        //tipoDetalle.SelectedIndex = 0;
+        tiempoEntregaPart.Text = "";
+
+        txtCantidad.Dispose();
+        txtDescripcion.Dispose();
+        txtPrecio.Dispose();
+        txtDescuento2.Dispose();
+        tiempoEntregaPart.Dispose();
+
+        txtDescuento.Text = "0.00";
+        txtEnvio.Text = "0.00";
+        txtImpuesto.Text = "16.0";
+        txtImpuestoImportacion.Text = "0.00";
+
+    }
+
+    protected void lkbNuevaOC_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("~/OrdenesCompra/formularioOrdenCompra.aspx");
+       // limpiaPantalla();
+    }
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        GridView1.ShowFooter = false;
+    }
+    protected void Button1_Click1(object sender, EventArgs e)
+    {
+        GridView1.ShowFooter = true;
+    }
+    protected void Button2_Click(object sender, EventArgs e)
+    {
+        GridView1.ShowFooter = true;
+    }
+    protected void lstOrigen_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+        if(lstOrigen.SelectedValue.ToString() == "2")
+        {
+            txtImpuesto.Text = "0";
+            lblEtiRFC.Text = "TAX ID:";
+            camposBancoInterVisibles(true, false); //Internacional
+        }
+        else
+        {
+            txtImpuesto.Text = "16";
+            lblEtiRFC.Text = "RFC:";
+            camposBancoInterVisibles(false, true); //Nacional
+        }
+
+    }
+
+    public void camposBancoInterVisibles(Boolean blnBandera, Boolean blnLimpiar)
+    {
+        lblBankInformation.Visible = blnBandera;
+        lblAccountName.Visible = blnBandera;
+        lblAccountNumber.Visible = blnBandera;
+        lblBankAddress.Visible = blnBandera;
+        lblAddress.Visible = blnBandera;
+        lblBankName.Visible = blnBandera;
+        lblABA.Visible = blnBandera;
+        txtAccountName.Visible = blnBandera;
+        txtAddress.Visible = blnBandera;
+        txtAccountNumber.Visible = blnBandera;
+        txtBankName.Visible = blnBandera;
+        txtBankAddress.Visible = blnBandera;
+        txtAba.Visible = blnBandera;
+    
+        if(blnLimpiar)
+            {
+                txtAccountName.Text = "";
+                txtAddress.Text = "";
+                txtAccountNumber.Text = "";
+                txtBankName.Text = "";
+                txtBankAddress.Text = "";
+                txtAba.Text = "";
+            }
+
+    }
+    protected void DropDownList1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        switch (Int32.Parse(lstClasificacionOC.SelectedValue))
+        {
+            case 1:
+                //job
+                desactivaClasificacionOC();
+                lblEtiJob.Visible = true;
+                txtJob.Visible = true;
+                RegularExpressionValidator9.Enabled = true;
+                RequiredFieldValidator9.Enabled = true;
+                break;
+            case 2:
+                //O.S.
+                desactivaClasificacionOC();
+                lblEtiOS.Visible = true;
+                txtOrdenServicio.Visible = true;
+                RegularExpressionValidator10.Enabled = true;
+                RequiredFieldValidator8.Enabled = true;
+                break;
+            case 3:
+                //Otro
+                desactivaClasificacionOC();
+                lblEspeOtro.Visible = true;
+                txtOtroClasificacion.Visible = true;
+                RequiredFieldValidator7.Enabled = true;
+                break;
+
+        }
+    }
+
+    protected void desactivaClasificacionOC()
+    {
+        lblEtiJob.Visible=false;
+        txtJob.Visible=false;
+        RegularExpressionValidator9.Enabled=false;
+        RequiredFieldValidator9.Enabled = false;
+
+        lblEtiOS.Visible=false;
+        txtOrdenServicio.Visible=false;
+        RegularExpressionValidator10.Enabled = false;
+        RequiredFieldValidator8.Enabled = false;
+
+        lblEspeOtro.Visible=false;
+        txtOtroClasificacion.Visible=false;
+        RequiredFieldValidator7.Enabled = false;
+    }
+
+    protected void txtOtroDocumento_TextChanged(object sender, EventArgs e)
+    {
+    }
+
+    protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            if (e.Row.RowState == DataControlRowState.Normal || e.Row.RowState == DataControlRowState.Alternate)
+            {
+                String strPendientes = DataBinder.Eval(e.Row.DataItem, "pendientes").ToString();
+                String strCantidad = DataBinder.Eval(e.Row.DataItem, "cantidad").ToString();
+
+                if (strPendientes == "0")
+                {// Oculta los Botones de Editar y Quitar partida.
+                    try
+                    {
+                        ImageButton ImgBtnEditar = (ImageButton)e.Row.FindControl("ImgBtnEditar");
+                        ImgBtnEditar.Visible = false;
+                        ImgBtnEditar.Dispose();
+                        ImageButton ImgBtnQuitar = (ImageButton)e.Row.FindControl("ImgBtnQuitar");
+                        ImgBtnQuitar.Visible = false;
+                        ImgBtnQuitar.Dispose();
+                    }
+                    catch (Exception ex)
+                    {
+                        //Console.WriteLine("{0} Exception caught.", e);
+                    }
+
+                }
+
+                if ( Int32.Parse(strCantidad) != Int32.Parse(strPendientes) )
+                {
+                    ImageButton ImgBtnQuitar = (ImageButton)e.Row.FindControl("ImgBtnQuitar");
+                    ImgBtnQuitar.Visible = false;
+                    ImgBtnQuitar.Dispose();
+                }
+            }
+
+            if (e.Row.RowState == DataControlRowState.Edit || e.Row.RowState == DataControlRowState.Alternate)
+            {
+
+            }
+        }
+    }
+
+
+}

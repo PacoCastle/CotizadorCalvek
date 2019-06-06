@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+  <siteMapNode url="~/Default.aspx" title="Inicio"  description="Inicio">
+    <siteMapNode url="~/Principal/Default.aspx" title="Principal"  description="Pagina Principal" />
+    <siteMapNode url="" title="Seguridad"  description="Contiene las opciones de seguridad" >
+      <siteMapNode url="~/Seguridad/Usuarios/ListarUsuarios.aspx" title="Usuarios"  description="ABC de Usuarios"/>
+      <siteMapNode url="~/Seguridad/Perfiles/ListarPerfil.aspx" title="Perfil"  description="ABC de Perfiles" />
+    </siteMapNode>
+    <!--FJCA 18/04/13 Se excluye la opcion del menu.
+      <siteMapNode url="" title="Reportes"  description="Contiene los Reportes" >
+        <siteMapNode url="~/Reportes/ReporteTemporal.aspx" title="Reporte"  description="Reporte temporal" />
+      </siteMapNode>-->
+    <siteMapNode url="~/Cotizador/Default.aspx" title="Cotizador"  description="Muestra las opciones del cotizador" >
+      <siteMapNode url="~/Cotizador/Revisiones.aspx" title="Revisiones"  description="Muestra las cotizasiones en Revisión" />
+    </siteMapNode>
+    <siteMapNode url="" title="Catalogos"  description="Contiene los Catalogos Utiles en el Sistema" >
+      <!--FJCA 19/03/14
+        <siteMapNode url="~/Catalogos/Productos/ListarProductos.aspx" title="Productos"  description="ABC de Productos" />-->
+      <!--FJCA 28/08/13
+        <siteMapNode url="~/Catalogos/Clientes/ListarClientes.aspx" title="Clientes"  description="ABC de Clientes" />-->
+      <!--FJCA 18/04/13 Se excluye la opcion del menu.
+        <siteMapNode url="~/Catalogos/Divisas/ListarDivisas.aspx" title="Divisas"  description="ABC de Divisas" />
+        <siteMapNode url="~/Catalogos/Productos/ListarProductos.aspx" title="Productos"  description="ABC de Productos" />
+        <siteMapNode url="~/clasificacionProductos/clasificacionProductos.aspx" title="Clasificación"  description="Clasificación" />-->
+      <!--FJCA 28/08/13
+        <siteMapNode url="~/Catalogos/Productos/ubicacionAlmacen.aspx" title="Ubicación"  description="Ubicación de Productos" />-->
+      <siteMapNode url="~/Catalogos/Productos/AltaProductoKepler.aspx" title="Alta Producto"  description="Alta Producto" />
+      <siteMapNode url="~/Catalogos/Productos/ActualizaStatusProductosKepler.aspx" title="Actualiza Estatus"  description="Actualiza Estatus" />
+
+      <!--FJCA 18/04/13 Se excluye la opcion del menu.
+        <siteMapNode url="~/Catalogos/Proveedores/ListarProveedores.aspx" title="Proveedores"  description="ABC de Proveedore" />-->
+    </siteMapNode>
+
+    <!--<siteMapNode title="Operación" description="Menu Operación">
+      <siteMapNode url="~/Admin/SeguimientoPedidos/listadoSeguimientoPedidos.aspx" title="Seguimiento Pedidos" description="Seguimiento Pedidos" />
+      <siteMapNode url="~/InteligenciaComercial/Botones.aspx" title="Compras Internas" description="Compras Internas"/>
+      <siteMapNode url="~/InteligenciaComercial/Botones Traspaso.aspx" title="CI Traspaso" description="Compras Internas por traspaso"/>
+      <siteMapNode url="~/Operacion/reporteRemisiones.aspx" title="Reporte Remisiones"  description="Reporte Remisiones" />
+      --><!--<siteMapNode url="~/Operacion/Mantenimiento.aspx" title="Reporte Remisiones"  description="Reporte Remisiones" />--><!--
+      <siteMapNode url="~/Operacion/Remisiones/AutorizaRemisiones.aspx" title="Autoriza Remisiones"  description="Autoriza Remisiones" />
+      <siteMapNode url="~/Catalogos/Productos/CanastaMateriales.aspx" title="Pedidos Mal Seleccionados"  description="Pedidos Mal Seleccionados" />
+    </siteMapNode>-->
+    <!--<siteMapNode url="" title="Nomina" description="Contiene el modulo de Nominas">
+        <siteMapNode url="~/Nomina/CatalogoCuentas.aspx" title="Catalogo Cuentas" description="Catalogo Cuentas" />
+      </siteMapNode>-->
+    <!--<siteMapNode url="" title="Inteligencia Comercial" description="Contiene el modulo de Inteligencia Comercial">
+      <siteMapNode url="~/InteligenciaComercial/Pareto.aspx" title="Pareto" description="Pareto" />
+      <siteMapNode url="~/InteligenciaComercial/InventariosCiclicos.aspx" title="Inventarios Ciclicos" description="Inventarios Ciclicos" />
+      <siteMapNode url="~/InteligenciaComercial/Campana Productos Nulos.aspx" title="Campaña Productos Nulos" description="Campaña Productos Nulos" />
+    </siteMapNode>-->
+
+    <!--<siteMapNode url="" title="Proyectos" description="Contiene los modulos relacionados con Proyectos">
+      <siteMapNode url="~/Proyectos/NvoProyecto.aspx" title="Alta Proyectos"  description="Inserta Nuevos Proyectos al Catalogo" />
+      <siteMapNode url="~/Proyectos/Altaproyectos.aspx" title="Partidas X Proyecto" description="Modifica las partidas por Proyecto" />
+    </siteMapNode>-->
+
+    <!--<siteMapNode url="~/OrdenesCompra/listadoOrdenesCompra.aspx" title="Ordenes de Compra"  description="Ordenes de Compra">
+      --><!--FJCA 18/04/13 Se excluye la opcion Reporte del menu
+        <siteMapNode url="~/OrdenesCompra/listadoTipoOrdenCompra.aspx" title="Reporte OC" description="Reporte OC"/>--><!--
+      <siteMapNode url="~/OrdenesCompra/listadoOrdenesCompraSeguimiento.aspx" title="Seguimiento OC" description="Seguimiento OC" />
+      --><!--FJCA 28/08/13 Se excluye la opcion del menu.
+        <siteMapNode url="~/OrdenesCompra/ReporteSeguimientoOrdenCompra.aspx" title="Reporte Seguimiento OC" description="Reporte Seguimiento OC" />--><!--
+      --><!--FJCA 13/05/13 Se excluye la opcion del menu.--><!--
+      --><!--<siteMapNode url="~/Admin/compras/Stock.aspx"  title="Stock"  description="Herramienta para administrar el stock" />--><!--
+    </siteMapNode>-->
+
+    <!--<siteMapNode url="" title="Cobranza" description="Contiene el modulo de cobranza">
+      --><!--FJCA 18/04/13 Se excluye la opcion del menu
+        <siteMapNode url="~/Cobranza/Depositos/ListarDepositos.aspx" title="Depositos"  description="Depositos" />
+        <siteMapNode url="~/Cobranza/Depositos/AplicacionDepositos.aspx" title="Aplicación Depositos"  description="Aplicación Depositos" />
+	      <siteMapNode url="~/Cobranza/DepositosPendientes/listadoDepositosPendientes.aspx" title="Depósitos Pendientes"  description="Depósitos Pendientes" />--><!--
+      <siteMapNode url="~/Cobranza/seguimientoLLamadas/FormularioRegistraLLamadas.aspx" title="Registro Llamadas"  description="Registro Llamadas" />
+      <siteMapNode url="~/Cobranza/antiguedadSaldos.aspx" title="Antiguedad de Saldos"  description="Antiguedad de Saldos" />
+      --><!--FJCA 18/04/13 Se excluye la opcion del menu
+        <siteMapNode url="~/Cobranza/seguimientoCobranza.aspx" title="Seguimiento Cobranza"  description="Seguimiento Cobranza" />--><!--
+      <siteMapNode url="~/Cobranza/facturasCobranzaFechaPago.aspx" title="Fecha Pago Facturas"  description="Fecha de Pago de Facturas" />
+      --><!--FJCA 28/08/13 Se excluye la opcion del menu.
+        <siteMapNode url="~/Admin/ControlCartera/busquedaFacturasCarteras.aspx" title="Cuentas X Cobrar" description="Cuentas X Cobrar"/>
+        <siteMapNode url="~/Cobranza/Bancos/aplicaBancos.aspx" title="Aplica Bancos"  description="Aplica Bancos" />--><!--
+      <siteMapNode url="~/Cobranza/PagosEfectivo/pagosEfectivo.aspx" title="Pagos Facturas"  description="Pagos Facturas" />
+      <siteMapNode url="~/Cobranza/VentasEspecialesCobranza/ventaEspecialCobranza.aspx" title="Ventas Especiales"  description="Ventas Especiales" />
+    </siteMapNode>-->
+
+    <!--<siteMapNode url="~/Admin/Cartas/CartaBuscaCliente.aspx" title="Reasignación de Clientes" description="Reasignación de Clientes"/>-->
+    <!--FJCA 29/04/13 Se cambia de ubicacion 
+      <siteMapNode url="~/Admin/ControlCartera/busquedaFacturasCarteras.aspx" title="Cuentas X Cobrar" description="Cuentas X Cobrar"/>-->
+    <!--<siteMapNode url="~/Admin/SeguimientoPedidos/comprasSeguimientoPendidos.aspx" title="Compras" description="Compras">
+      --><!--FJCA 18/04/13 Se excluye la opcion Reporte del menu
+      <siteMapNode url="~/Admin/compras/listadoMarcasCompras.aspx" title="Reporte Compras" description="Reporte Compras"/>--><!--
+      <siteMapNode url="~/Admin/compras/matrizDiferencias.aspx" title="Reporte Matriz" description="Reporte Matriz"/>
+      <siteMapNode url="~/Admin/SeguimientoPedidos/comprasStock.aspx"  title="Compras Stock"  description="Herramienta para administrar de compras stock" />
+      --><!--FJCA 18/04/13 Se excluye la opcion Reporte del menu
+      <siteMapNode url="~/Admin/compras/NivelacionCompras.aspx"  title="Nivelacion Compras"  description="Herramienta para nivelar Compras" />--><!--
+      <siteMapNode url="~/Admin/compras/altaProdPrecioEspecial.aspx"  title="Precio Especial Nivelacion"  description="Inserta Productos Precio Especial Nivelacion" />
+      <siteMapNode url="~/InteligenciaComercial/ComprasSemana.aspx"  title="Compras Stock Semanal"  description="Modelo de Stock Semanal" />
+      <siteMapNode url="~/Admin/compras/CompraEspecial.aspx"  title="Compra Especial"  description="Compra Especial" />
+    </siteMapNode>-->
+
+
+    <!--FJCA 18/04/13 Se excluye la opcion Reporte del menu
+      <siteMapNode url="~/Admin/controlfacturacion/formularioRevisionFacturas.aspx" title="Seguimiento Facturas" description="Seguimiento Facturas">
+      </siteMapNode>-->
+
+    <!--<siteMapNode url="~/Admin/Polizas/busquedaPolizas.aspx" title="Polizas" description="Polizas">
+    </siteMapNode>-->
+
+    <!--<siteMapNode url="~/VisitasVentas/FormularioVisita.aspx" title="Visitas" description="Visitas">
+      <siteMapNode url="~/catalogos/visitas/Departamentos.aspx" title="Catalogo Departamentos" description="Catalogo Departamentos"/>
+      <siteMapNode url="~/catalogos/visitas/Novedad.aspx" title="Catalogo Novedad" description="Catalogo Novedad"/>
+      <siteMapNode url="~/catalogos/visitas/Objetivo.aspx" title="Catalogo Objetivo" description="Catalogo Objetivo"/>
+      <siteMapNode url="~/catalogos/visitas/siguientePaso.aspx" title="Siguiente Paso" description="Siguiente Paso"/>
+      <siteMapNode url="~/catalogos/visitas/solicitudApoyo.aspx" title="Solicitud Apoyo" description="Solicitud Apoyo"/>
+      <siteMapNode url="~/catalogos/visitas/EstatusActualVisitas.aspx" title="Estatus Visita" description="Estatus Visita"/>
+      <siteMapNode url="~/catalogos/visitas/TemaPresentado.aspx" title="Tema Presentado" description="Tema Presentado"/>
+      <siteMapNode url="~/catalogos/visitas/PuestoVisita.aspx" title="Puesto Visita" description="Puesto Visita"/>
+      <siteMapNode url="~/catalogos/visitas/AgendaContactos.aspx" title="Agenda Contactos" description="Agenda Contactos"/>
+      <siteMapNode url="~/VisitasVentas/ReporteVisitasVentas.aspx" title="Reporte Visitas Ventas" description="Reporte Visitas Ventas"/>
+    </siteMapNode>-->
+    <!--<siteMapNode url="~/Admin/Incidencias/incidencias.aspx" title="Incidencias" description="Incidencias"/>-->
+    <!--<siteMapNode url="~/almacen/Etiquetas/listadoOrdenesEntrada.aspx" title="OE-Etiquetas" description="Impresion Etiquetas"/>-->
+    <!--<siteMapNode url="~/Admin/DIOT/asignacionPeriodoAcreditacion.aspx" title="DIOT" description="DIOT">
+      <siteMapNode url="~/Admin/DIOT/reporteDiot.aspx" title="Reporte DIOT" description="Reporte DIOT"/>
+    </siteMapNode>-->
+
+    <!--FJCA 28/08/13 Se excluye la opcion Reporte del menu    
+	<siteMapNode url="~/Comisiones/formularioComisiones.aspx" title="Comisiones" description="Comisiones" />
+    </siteMapNode>-->
+
+    <!--<siteMapNode url="" title="Recursos Humanos"  description="Contiene catalogos de RH" >
+      <siteMapNode url="~/ComisionesRH/ConsolidadoComisionesRh.aspx" title="Consolidado Comisiones"  description="Consolidado de comisiones para  RH" />
+    </siteMapNode>-->
+
+    <!--<siteMapNode url="~/Admin/Contabilidad/HerramientasContables.aspx" title="Contabilidad" description="Contablidad"/>-->
+    <!--<siteMapNode url="~/Admin/ProveedorXml/LeectorXml.aspx" title="Lector XML" description="Lector de XML"/>-->
+    <!--<siteMapNode url="~/Admin/ControlFacturacion/formularioRevisionFacturas.aspx" title="Control Facturación" description="Control Faxturacion"/>-->
+
+
+
+  </siteMapNode>
+
+</siteMap>

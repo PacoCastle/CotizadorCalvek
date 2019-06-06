@@ -1,0 +1,204 @@
+using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+using InventariosTableAdapters;
+
+public partial class Admin_compras_CompraEspecial : System.Web.UI.Page
+{
+    int intPerfil;
+    int intUsuarioId;
+    int intOficina;
+    String fecha = "";
+    private static int NUMFUNCION = 66;
+
+    protected void Page_Load(object sender, EventArgs e)
+    {
+    
+         String error = Utilis.validaPermisos(Session, NUMFUNCION);
+            if (!error.Equals(""))
+            {
+                Response.Redirect(error);
+            }
+
+          InfoSessionVO infoSession = (InfoSessionVO)Session["InfoSession"];
+          intPerfil = Int32.Parse(infoSession.getValor(InfoSessionVO.PERFIL).ToString());
+          intUsuarioId = Int32.Parse(Session["usuarioID"].ToString());
+          intOficina = Int32.Parse(infoSession.getValor(InfoSessionVO.OFICINA).ToString());
+          lblusuarioid.Text = Session["usuarioID"].ToString();
+          lblperfilid.Text = infoSession.getValor(InfoSessionVO.PERFIL).ToString();
+
+          //Fecha Actual.
+          get_fecha_hoyTableAdapter get_fecha_hoy = new get_fecha_hoyTableAdapter();
+          get_fecha_hoy.GetData(ref fecha);
+          txtFechaInicio.Text = fecha;
+
+
+
+       
+    }
+
+
+    protected void btnBuscaProd_Click(object sender, EventArgs e)
+    {
+        string resultado = "";
+        string descripcion = "";
+        string marca = "";
+        //Busca producto
+        get_producto_altaCETableAdapter get_producto_altaCE = new get_producto_altaCETableAdapter();
+        get_producto_altaCE.GetData(txtClaveProducto.Text,ref resultado,ref descripcion,ref marca);
+        lblCodigo.Text = resultado;
+        lblDescripcion.Text = descripcion;
+        lblMarca.Text = marca;
+
+        if (resultado == "No se encuentra")
+        {
+            btnAgregar.Enabled = false;
+            
+        }
+        else 
+        { 
+            btnAgregar.Enabled = true;
+        
+        }
+
+       
+    }
+
+    protected void btnAgregar_Click(object sender, EventArgs e)
+    {
+        String codigoexiste = "";
+        //Busca producto
+        get_valida_InsercionTableAdapter get_valida_Insercion = new get_valida_InsercionTableAdapter();
+        get_valida_Insercion.GetData(Int32.Parse(lstAsignado.SelectedValue), lblCodigo.Text, lstCliente.SelectedValue.ToString(),ref codigoexiste);
+        if (codigoexiste == "0")
+        {
+
+            set_inserta_CompraEspecialTableAdapter set_inserta_CompraEspecia = new set_inserta_CompraEspecialTableAdapter();
+            set_inserta_CompraEspecia.GetData(Int32.Parse(lstAsignado.SelectedValue),Int32.Parse(lblusuarioid.Text), 
+                lblCodigo.Text, txtFechaInicio.Text, txtFechaFin.Text,Int32.Parse(txtCantidad.Text), lstCliente.SelectedValue.ToString(),lstCliente.SelectedItem.ToString(),txtJustificacion.Text);
+
+            Response.Redirect("../compras/CompraEspecial.aspx");
+        }
+        else
+        {
+            ScriptManager.RegisterClientScriptBlock(this.Page, this.Page.GetType(), "Yaxiste", "alert('Ya esta registrado');", true);
+        
+        }
+    }
+    protected void LinkButton1_Command(object sender, CommandEventArgs As)
+    {
+        int id = Int32.Parse(As.CommandName);
+        string resultado = "";
+        set_cancela_CompraEspecialTableAdapter set_cancela_CompraEspecial = new set_cancela_CompraEspecialTableAdapter();
+        set_cancela_CompraEspecial.GetData(intPerfil, intUsuarioId, id,ref resultado);
+        if (resultado == "1")
+        {
+            GridProductos.DataBind();
+        }
+
+    }
+
+    protected void lnAutoriza_Command(object sender, CommandEventArgs As)
+    {
+        
+
+    }
+    protected void GridProductos_RowCreated(object sender, GridViewRowEventArgs e)
+    {
+       
+    }
+
+    protected void GridProductos_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            
+            ImageButton imgAutoriza = (ImageButton)e.Row.FindControl("ImgAutorizacion");
+            ImageButton imgEditar = (ImageButton)e.Row.FindControl("ImgEditar");
+            Label Autorizado = (Label)e.Row.FindControl("Label7");
+            if (imgAutoriza != null)
+            {
+                if (!(intPerfil == 1 || intPerfil == 4 || intPerfil == 6 || intPerfil == 25 || intPerfil == 31))
+                {
+                    imgAutoriza.Visible = false;
+                    imgEditar.Visible = false;
+                }
+                else
+                {
+                    imgAutoriza.Visible = true;
+                    imgEditar.Visible = true;
+
+                }
+                if (Autorizado.Text == "SI")
+                {
+                    imgAutoriza.ImageUrl = "~/Imagenes/bullet_green.png";
+                }
+                else
+                {
+                    imgAutoriza.ImageUrl = "~/Imagenes/bullet_black.png";
+                }
+            }
+        }
+    }
+
+    protected void ImgAutorizacion_Command(object sender, CommandEventArgs As)
+    {
+        int id = Int32.Parse(As.CommandName);
+
+        if (intPerfil == 1 || intPerfil == 4 || intPerfil == 6 || intPerfil == 25 || intPerfil == 31)
+        {
+
+            set_autoriza_CompraEspecialTableAdapter set_autoriza_CompraEspecial = new set_autoriza_CompraEspecialTableAdapter();
+            set_autoriza_CompraEspecial.GetData(intPerfil, intUsuarioId, id);
+            GridProductos.DataBind();
+        }
+    }
+    protected void GridProductos_RowUpdating(object sender, GridViewUpdateEventArgs Args)
+    {
+        // validacion cantidad
+        String Cantidad = Args.NewValues["cantidad"].ToString();
+        String Vigencia = Args.NewValues["Vigencia"].ToString();
+        
+        Int32 CantInt = 0;
+        Int32 VigenciaInt = 0;
+        if (!Int32.TryParse(Cantidad, out CantInt) || !Int32.TryParse(Vigencia, out VigenciaInt))
+        {
+            Args.Cancel = true;
+        }
+        else if (CantInt < 1 || VigenciaInt < 1)
+        {
+            Args.Cancel = true;
+        }
+        else 
+        {
+            int id = Int32.Parse(Args.NewValues["id"].ToString());
+
+            set_Actualiza_CompraEspecialTableAdapter set_Actualiza_CompraEspecial = new set_Actualiza_CompraEspecialTableAdapter();
+            set_Actualiza_CompraEspecial.GetData(intUsuarioId,id,VigenciaInt,CantInt);
+        }
+    }
+    protected void lnCerrarCom_Click(object sender, EventArgs e)
+    {
+        btnComentario_ModalPopupExtender.Hide();
+    }
+    protected void btnComentario_ModalPopupExtender_Load(object sender, EventArgs e)
+    {
+        //lblidCom.Text = "1";        
+    }
+    protected void ImgJustificacion_Command(object sender, CommandEventArgs As)
+    {
+        int id = Int32.Parse(As.CommandName);
+        string justificacion = "";
+        get_justificacion_CETableAdapter get_justificacion_CE = new get_justificacion_CETableAdapter();
+        get_justificacion_CE.GetData(id, ref justificacion);
+        txtMuestraComentario.Text = justificacion.ToString();
+        btnComentario_ModalPopupExtender.Show();
+    }
+}

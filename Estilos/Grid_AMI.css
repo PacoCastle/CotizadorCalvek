@@ -1,0 +1,48 @@
+﻿.headerStyle 
+{
+    background-color: #341C5E;
+    color: #FFFFFF;
+    font-size: 8pt;
+    font-weight: bold;
+   
+    
+}
+
+.footerStyle 
+{
+    background-color: #341C5E;
+    color: #FFFFFF;
+    font-size: 8pt;
+    font-weight: bold;
+    font-family: "Arial", Sans, serif;
+}
+
+.itemStyle
+{
+    background-color: #FFFFFF;
+    color: #000000;
+    font-size: 8pt;
+    
+}
+
+.alternateItemStyle
+{
+    background-color: #F1EFF3;
+    color: #000000;
+    font-size: 8pt;
+}
+
+.linkStyle
+{
+    
+    color: #000000;
+    font-size: 8pt;
+    
+}
+ .editStyle
+{
+    
+    background-color: #189097;
+    color: #FFFFFF;
+    font-size: 8pt;
+}

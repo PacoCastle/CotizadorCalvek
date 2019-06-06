@@ -1,0 +1,33 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="HelpMasterPage.master.cs" Inherits="HelpMasterPage" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <script type="text/javascript" src="<%= Page.ResolveUrl("~/scriptsJS/jquery-1.11.1.js")%>"></script>
+    <script type="text/javascript"  src="<%=Page.ResolveUrl("~/scriptsJS/jquery-ui.js")%>"> </script>
+<head runat="server">
+    <title>Ayuda Sick</title>
+    <%--<link href="Estilos/EstilosPrincipal.css" rel="Stylesheet" />--%>
+    <%--<link rel="shortcut icon" href="Imagenes/favicon.png" />--%>
+    <%--<link href="Estilos/estiloFormulario.css" rel="Stylesheet" />--%>
+</head>
+<body>
+    <link rel="stylesheet" href="<%=Page.ResolveUrl("~/Estilos/jquery-ui.css")%>"/> 
+      <div id="wrapper">
+        <form id="form1" runat="server" title="SIM">
+        
+            <div id="header">
+                
+                <asp:Image ID="Image1" runat="server" ImageUrl="~/Imagenes/logoAMI.PNG" Height="60px" Width="283px" />
+
+            </div>
+        
+            <div id="content">
+                <asp:contentplaceholder id="MainContent" runat="server">
+                  <!-- Page-specific content will go here... -->
+                    </asp:contentplaceholder>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

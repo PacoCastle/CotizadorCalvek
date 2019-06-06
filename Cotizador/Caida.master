@@ -1,0 +1,274 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Caida.master.cs" Inherits="Cotizador_MasterPage" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>SICK</title>
+    <%--<link rel="shortcut icon" href="../Imagenes/favicon.png" />--%>
+</head>
+<body style="font-family: Times New Roman">
+    <form id="form1" runat="server">
+    <div style="background-color: transparent; background-attachment: scroll; background-repeat: repeat-y; background-image: url(../Imagenes/fondoCaida.jpg);"><a href="javascript:history.back(1)"><<</a><table border="0" cellpadding="0" cellspacing="0" style="width: 794px; height: 467px; background-color: transparent; background-attachment: scroll; background-repeat: no-repeat;">
+            <tr>
+                <td colspan="3" style="height: 190px" valign="top">
+        <div style="width: 800px; height: 1px">
+            <table style="height: 227px;" border="0" cellpadding="0" cellspacing="0" rules="none" width="1">
+                <tr>
+                    <td colspan="3" rowspan="2" style="height: 48px">
+                        <asp:Image ID="Image1" runat="server" ImageUrl="~/Imagenes/caida1.JPG" /></td>
+                </tr>
+                <tr>
+                </tr>
+                <tr>
+                    <td style="width: 6px; height: 16px">
+                        <asp:Image ID="Image2" runat="server" ImageUrl="~/Imagenes/caida2.JPG" Height="21px" Width="295px" /></td>
+                    <td colspan="2" style="height: 16px; text-align: right">
+                        &nbsp;</td>
+                </tr>
+                <tr style="font-weight: bold; font-size: 12pt">
+                    <td style="width: 6px; height: 1px; text-align: left;">
+                        <table border="0" width="100%">
+                            <tr>
+                                <td colspan="3" style="color: white; height: 10px; background-color: gray">
+                                    <span style="font-size: 10pt">&nbsp;
+                                    CLIENTE</span></td>
+                            </tr>
+                            <tr>
+                                <td rowspan="3" style="height: 90px;" colspan="3" valign="top">
+                                    <span>
+                                    </span>
+                                    <asp:Label ID="lblRazonSocial" runat="server" Font-Bold="True" Font-Size="10pt" Width="251px"></asp:Label><BR>
+                                    <asp:Label ID="lblDireccionCliente" runat="server" Font-Size="8pt" Width="252px"></asp:Label><br />
+                                    <asp:Label ID="lblTelefonoCliente" runat="server" Font-Size="8pt" Width="252px"></asp:Label><br />
+                                    <asp:Label ID="lblRepresentante" runat="server" Font-Bold="True" Font-Size="10pt" Height="10px" Width="251px"></asp:Label></td>
+                            </tr>
+                            <tr>
+                            </tr>
+                            <tr>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="width: 220px; height: 1px">
+                        &nbsp;</td>
+                    <td style="width: 359px; height: 1px; text-align: right; vertical-align: top;">
+                        <table border="0" width="100%">
+                            <tr>
+                                <td colspan="2" rowspan="1" style="color: white; height: 10px; background-color: gray;
+                                    text-align: left">
+                                    <span style="font-size: 10pt">&nbsp; COTIZACION:&nbsp;
+                        <asp:Label ID="lblCotizacion" runat="server" Font-Bold="True" Font-Size="10pt"></asp:Label></span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" rowspan="3" style="text-align: left; height: 90px;">
+                                    <asp:Label ID="Label2" runat="server" Font-Size="10pt" Text="Fecha:"></asp:Label>
+                                    <asp:Label ID="lblFechaCotizacion" runat="server" Font-Size="10pt" Font-Bold="True"></asp:Label><br />
+                                    <asp:Label ID="Label3" runat="server" Font-Size="10pt" Text="Asesor:"></asp:Label>
+                                    <asp:Label ID="lblAsesor" runat="server" Font-Size="10pt" Font-Bold="True"></asp:Label><br />
+                                    <asp:Label ID="Label4" runat="server" Font-Size="10pt" Text="Email:"></asp:Label>
+                                    <asp:Label ID="lblEmail" runat="server" Font-Size="10pt" Font-Bold="True"></asp:Label><br />
+                                    <asp:Label ID="Label7" runat="server" Font-Size="10pt" Text="Teléfono:"></asp:Label>
+                                    <asp:Label ID="lblRadio" runat="server" Font-Bold="True" Font-Size="10pt"></asp:Label><br />
+                                    <asp:Label ID="Label5" runat="server" Font-Size="10pt" Text="Moneda:"></asp:Label>
+                                    <asp:Label ID="lblMoneda" runat="server" Font-Size="10pt" Font-Bold="True" Height="12px"></asp:Label></td>
+                            </tr>
+                            <tr>
+                            </tr>
+                            <tr>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3" style="height: 40px">
+                    </td>
+                </tr>
+            </table>
+        </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="height: 231px">
+        <asp:contentplaceholder id="ContentPlaceHolder1" runat="server">
+        </asp:contentplaceholder>
+                </td>
+                <td colspan="3" style="height: 231px">
+                    <asp:contentplaceholder id="ContentPlaceHolder2" runat="server">
+                    </asp:contentplaceholder>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="height: 27px">
+        <div style="width: 800px; height: 100px">
+            <table style="width: 798px; height: 157px; background-color: transparent;">
+                <tr>
+                    <td colspan="4" style="height: 4px">
+                        <asp:Label ID="Label8" runat="server" Text="Comentarios" Font-Bold="True" Font-Size="10pt"></asp:Label><span
+                            style="font-size: 7pt; background-color: transparent;">
+                        </span>
+                        </td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                    
+                    </td>
+
+                </tr>
+                 <tr>
+                    <td colspan="3">
+                    
+                        <asp:Label ID="lblNotas" runat="server" Font-Bold="False" Font-Size="7pt" Height="12px"></asp:Label>
+                                        
+                    </td>
+
+                </tr>
+                <tr>
+                    <td colspan="4" style="height: 4px">
+                        &nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="height: 4px">
+                        <asp:Label ID="Label6" runat="server" Text="Condiciones Comerciales" Font-Bold="True" Font-Size="10pt"></asp:Label><span
+                            style="font-size: 7pt; background-color: transparent;">&nbsp;<span><asp:Label 
+                            ID="lblMoneda2" runat="server" Font-Bold="False" Font-Size="7pt" Height="12px" 
+                            Visible="False"></asp:Label>
+                        <asp:Label ID="lblCondicionesPago" runat="server" Visible="False"></asp:Label>
+                        <asp:Label ID="lblLAB" runat="server" Visible="False"></asp:Label>
+                        </span>
+                        </span>
+                        </td>
+                </tr>
+                <tr style="font-size: 7pt">
+                    <td style="height: 76px; width: 638px;" colspan="2">
+                    <p>
+                        <asp:Label ID="lblCondicion1" runat="server"  Font-Size="9pt" Height="15px"></asp:Label><br />
+                        <asp:Label ID="lblCondicion2" runat="server"  Font-Size="9pt" 
+                            Height="12px"></asp:Label><br />
+                        <asp:Label ID="lblCondicion3" runat="server"  Font-Size="9pt" Height="15px"></asp:Label><br />
+                        <asp:Label ID="lblCondicion4" runat="server"  Font-Size="9pt" Height="15px"></asp:Label><br />
+                        <asp:Label ID="lblCondicion5" runat="server"  Font-Size="9pt" Height="15px"></asp:Label>   
+                       </p>                                                                      
+                       
+                        <p>
+                            <span style="font-size: 8pt">
+                                <table border="1" frame="box" rules="none" style="font-weight: bold; width: 195px">
+                                    <tr>
+                                        <td colspan="3" rowspan="2">
+                                            VIGENCIA:
+                                            <asp:Label ID="lblVigencia" runat="server"></asp:Label></td>
+                                    </tr>
+                                    <tr>
+                                    </tr>
+                                </table>
+                            </span>
+                        </p>
+                    </td>
+                    <td colspan="2" style="height: 76px; font-weight: bold; font-size: 8pt;" valign="top">
+                        <table style="width: 161px; height: 114px">
+                            <tr>
+                                <td colspan="3" style="height: 9px; text-align: center">
+                                    ATTE</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="height: 54px; text-align: center">
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <hr />
+                                    <asp:Label ID="lblAsesor2" runat="server" Font-Bold="True" Font-Size="10pt"></asp:Label></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td colspan="4" style="height: 4px">
+                        <asp:Label ID="Label1" runat="server" Text="Cuenta Bancarias" Font-Bold="True" Font-Size="10pt"></asp:Label><span
+                            style="font-size: 7pt; background-color: transparent;">
+                        </span>
+                        </td>
+                </tr>
+                <tr>
+                    <td style="height: 76px; width: 638px;" colspan="2">
+                    <p>
+                        <asp:Label ID="lblCuenta1" runat="server" Font-Bold="False" Font-Size="7pt" 
+                            Height="12px"></asp:Label><br />
+                        <asp:Label ID="lblCuenta2" runat="server" Font-Bold="False" Font-Size="7pt" 
+                            Height="12px"></asp:Label><br />
+                        <asp:Label ID="lblCuenta3" runat="server" Font-Bold="False" Font-Size="7pt" 
+                            Height="12px"></asp:Label><br />
+                        <asp:Label ID="lblCuenta4" runat="server" Font-Bold="False" Font-Size="7pt" 
+                            Height="12px"></asp:Label><br />
+                        </p>
+                    </td>
+
+                </tr>
+                <tr style="font-weight: bold; font-size: 8pt">
+                    <td colspan="4">
+                    </td>
+                </tr>
+                <tr style="font-weight: bold; font-size: 8pt">
+                    <td colspan="4">
+                        &nbsp;</td>
+                </tr>
+                <tr style="font-weight: bold; font-size: 8pt">
+                    <td colspan="4" style="height: 150px">
+                        <table style="width: 790px">
+                            <tr>
+                                <td style="width: 20%; height: 123px" valign="top">
+                                    <span>OFICINA MATRIZ<br />
+                                        Carr. Mex-Piedras Negras Km 456<br />
+                                        Col. Central de Maquinaria,<br />
+                                        C.P. 78434, San Luis Potosí, S.L.P.<br />
+                                        Tel/Fax (444) 818 3807</span></td>
+                                <td style="width: 20%; height: 123px" valign="top">
+                                    <span>SUCURSAL SAN LUIS POTOSÍ<br />
+                                        Carr. 57 Local 6<br />
+                                        Col. Talleres,<br />
+                                        C.P. 78399, San Luis potosí, S.L.P.<br />
+                                        Tel: (444) 128 6120<br />
+                                        &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; (444) 128 6121<br />
+                                        &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; (444) 567 5327<br />
+                                        Fax: (444) 128 6122</span></td>
+                                <td style="width: 20%; height: 123px" valign="top">
+                                    <span>SUCURSAL QUERETARO<br />
+                                        Carr. a campo militar 305 - T,<br />
+                                        Col. San Antonio de la punta,
+                                        <br />
+                                        C.P. 76110, Querétaro, Qro.<br />
+                                        Tel/Fax: (442) 298 0031<br />
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; (442) 298 0215<br />
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; (442) 298 0167<br />
+                                    </span></td>
+                                <td style="width: 20%;height: 123px" valign="top">
+                                    <span>SUCURSAL CELAYA<br />
+                                        Francisco Juárez 1605 – PB<br />
+                                        Col. Del Parque CP 38097 Celaya, Guanajuato<br />
+                                        Tel/Fax: (461) 615 4764<br />
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(461) 609 0994</span></td>
+                                <td sTel: (462) 624 5019<br />
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+                                <td style="width: 20%;height: 123px" valign="top">
+                                    <span>SUCURSAL IRAPUATO<br />
+                                        Av. Arboledas No. 2208
+                                    <br />
+                                    Col. Fracc. San Pedro<br />
+                                    C.P 36520<br />
+                                    Irapuato, Gto<br />
+                                        Tel: (462) 624 5019<br />
+                                        Tel: (462) 625 6594<br />
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+                </td>
+            </tr>
+        </table>
+        &nbsp;
+    </div>
+    </form>
+</body>
+</html>

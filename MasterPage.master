@@ -1,0 +1,152 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 5.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<link type="text/css" href="<%=Page.ResolveUrl("~/Content/bootstrap.min.css")%>" rel="stylesheet" />
+<%--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">--%>
+
+<script type="text/javascript" src="<%= Page.ResolveUrl("~/scriptsJS/jquery-1.8.1.min.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/jquery.datePicker.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/date.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/jquery.sparkline.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/jquery.ui.draggable.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/jquery.alerts.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/utilidades.js")%>"></script>
+
+<%--Se remplaza jquery-ui y hoja de estilos por la v.1.12   23/01/2019 --%>
+<link type="text/css" href="<%=Page.ResolveUrl("~/scriptsJS/ExamenesCss/jquery-ui/jquery-ui.css")%>" rel="stylesheet" />
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/ExamenesJs/jquery-ui/jquery.js")%>"></script>
+<script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/ExamenesJs/jquery-ui/jquery-ui.min.js")%>"></script>
+
+
+<head runat="server">
+    <title>Cotizador</title>
+    <link href="Estilos/EstilosPrincipal.css" rel="Stylesheet" />
+    <%--<link rel="shortcut icon" href="Imagenes/favicon.png" />--%>
+    <link href="Estilos/estiloFormulario.css" rel="Stylesheet" />
+    <link href="/Estilos/StyleSheet.css" rel="Stylesheet" />
+    <link type="text/css" href="<%=Page.ResolveUrl("~/scriptsJS/ExamenesCss/loader.css")%>" rel="stylesheet" />
+    <%--  <script type="text/javascript" src="<%=Page.ResolveUrl("~/Scripts/jquery-3.0.0.min.js")%>"></script>--%>
+    <link type="text/css" href="<%=Page.ResolveUrl("~/scriptsJS/ExamenesCss/DatePickerBootstrap/bootstrap-datetimepicker.css")%>" rel="stylesheet" />
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/Scripts/bootstrap.min.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/ScriptsJs/ExamenesJs/DatePickerBootstrap/moment.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/ScriptsJs/ExamenesJs/DatePickerBootstrap/bootstrap-datetimepicker.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/ScriptsJs/ExamenesJs/DatePickerBootstrap/bootstrap-datetimepicker.es.js")%>"></script>
+
+
+</head>
+<body>
+    
+
+    <link rel="stylesheet" type="text/css" media="screen" href="<%=Page.ResolveUrl("~/Estilos/datePicker.css")%>" />
+    <link rel="stylesheet" type="text/css" media="screen" href="<%=Page.ResolveUrl("~/Estilos/demoCalendario.css")%>" />
+    <link rel="stylesheet" type="text/css" media="screen" href="<%=Page.ResolveUrl("~/Estilos/jquery.alerts.css")%>" />
+    <link rel="stylesheet" type="text/css" media="screen" href="<%=Page.ResolveUrl("~/Estilos/EstilosPrincipal.css")%>" />
+
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <%--<a class="navbar-brand" href="#">Logo</a>--%>
+                <a href="#" class="navbar-left">
+                    <img src="/Imagenes/LOGO%20PRINCIPAL%20small.png"></a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/Default.aspx">Login</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" ariaform-haspopup="true" aria-expanded="false">Seguridad<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/Seguridad/Usuarios/ListarUsuarios.aspx">Usuarios</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Catálogos<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-submenu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Productos</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/Catalogos/Productos/AltaProductoKepler.aspx">Alta Producto</a></li>
+                                </ul>
+                            </li>
+                            <li class="divider"></li>
+                            <li class="dropdown-submenu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Clientes</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/Catalogos/Clientes/AltaClienteKepler.aspx">Alta Clientes</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Doctores</a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/Catalogos/Doctores/AdminDoctores.aspx">Doctores</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cobranza<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="/Cobranza/antiguedadSaldos.aspx">Cobranza</a></li>
+                            </ul>
+                        </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cotizador<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/Cotizador/Cotizaciones.aspx">Cotizador</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Perfiles<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/Catalogos/Perfiles/AltaPerfiles.aspx">Alta Perfil</a></li>
+                            <li><a href="/Catalogos/Perfiles/Perfiles.aspx">Perfiles</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pacientes<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/Catalogos/Pacientes/RegistroPacientes.aspx">Buscar</a></li>
+                            <li><a href="/Catalogos/Pacientes/AltaPaciente.aspx">Alta Pacientes</a></li>
+                            <li><a href="/Catalogos/Pacientes/CapturaRegistro.aspx">Captura Registro</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Proyectos Medicos<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/Examenes/DatosGenerales.aspx">TOYOTA</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <!–/.nav-collapse –>
+        </div>
+    </nav>
+    <hr />
+    <div class="container body-content" runat="server">
+
+        <form id="form1" runat="server" title="SIM" class="form-horizontal">
+            <asp:HiddenField ID="hdnDate" ClientIDMode="Static" runat="server" />
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+        </form>
+    </div>
+
+
+    <div class="container2" runat="server">
+    </div>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/ExamenesJs/GetDate.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/ExamenesJs/jquery.numeric.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/ExamenesJs/loader.js")%>"></script>
+
+    <hr />
+</body>
+</html>
+

@@ -1,0 +1,56 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Cotizador.master.cs" Inherits="Cotizador_Cotizador" MasterPageFile="../MasterPage.master" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <link href="../Estilos/EstilosPrincipal.css" rel="stylesheet" />
+    <%--    <script type="text/javascript" src="<%= Page.ResolveUrl("~/scriptsJS/jquery-1.8.1.min.js")%>"></script>--%>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/jquery.datePicker.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveUrl("~/scriptsJS/date.js")%>"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="<%=Page.ResolveUrl("~/Estilos/datePicker.css")%>" />
+    <link rel="stylesheet" type="text/css" media="screen" href="<%=Page.ResolveUrl("~/Estilos/demoCalendario.css")%>" />
+    <link href="../Estilos/Grid_AMI.css" rel="stylesheet" />
+
+
+    <%--<div id="header" style="width: 1115px; height: 8.4em">--%>
+    <table style="width: 101%;">
+        <tr>
+            <td style="width: 1589px">
+                <span style="text-align: left">
+                    <asp:ObjectDataSource ID="ObjectDataSource2" runat="server" OldValuesParameterFormatString="original_{0}" SelectMethod="GetData" TypeName="cotizadorTableAdapters.get_listaAgentesVentaTableAdapter">
+                        <SelectParameters>
+                            <asp:SessionParameter Name="intUsuarioId" SessionField="usuarioID" Type="Int32" />
+                        </SelectParameters>
+                    </asp:ObjectDataSource></td>
+        </tr>
+        <tr>
+            <td style="width: 1589px">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 1589px">
+                <span style="text-align: left">
+                    <asp:Label ID="lblAgentes" Text="Agentes" runat="server" ForeColor="White" Font-Bold="True" Width="87px" Style="padding: 2px" BackColor="#341C5E" Height="22px" />
+                    <asp:DropDownList ID="lstAgentes" runat="server" DataSourceID="ObjectDataSource2" DataTextField="usuarioNombreCompleto_cotizacion" DataValueField="usuarioId_cotizacion" AutoPostBack="True" OnSelectedIndexChanged="lstAgentes_SelectedIndexChanged" Font-Size="9pt" Height="20px" Width="112px"></asp:DropDownList>
+
+                    <asp:Label ID="Label4" Text="Buscar Producto" runat="Server" BackColor="#341C5E" ForeColor="White" Font-Bold="True" Width="152px" Style="padding: 2px" Height="22px" />
+                    <asp:TextBox ID="SearchCriterion" runat="Server" Font-Size="9pt" Width="120px" OnTextChanged="SearchCriterion_TextChanged" Height="20px" />
+                    <asp:Button ID="Button1" Text="Ir..." OnClick="Get_Criterion" runat="Server" Font-Size="9pt" Height="20px" />
+
+                    <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="SearchCriterion"
+                        ErrorMessage="Mínimo 3 caractéres" ValidationExpression="[0-9a-zA-Z_.-]{3,}" Width="169px" Display="Dynamic" Height="18px"></asp:RegularExpressionValidator>
+
+                    <asp:Label ID="lblUsuario" runat="server" Font-Bold="True" Font-Size="Small"></asp:Label>
+                    <%if (Session["OrderNumber"] != null)
+                        {%>
+                    ,<a href="../Cotizador/ShopCart.aspx?cotizacionid=<%= Session["OrderNumber"]%>" style="color: #341C5E; font-size: small; font-weight: bold;">Cot Actual:<%= Session["OrderNumber"]%></a>
+                    <%}%>
+                    <asp:LinkButton ID="LinkButton2" runat="server" OnClick="LinkButton2_Click" ForeColor="#341C5E" Font-Bold="True" Font-Size="Small">SALIR</asp:LinkButton>
+                    <a href="javascript:history.back(1)" style="color: #341C5E; font-weight: bold; font-size: small;">Regresar</a><asp:Label ID="lblUsuarioAlterno" runat="server" Font-Bold="True" Font-Size="Small"></asp:Label>
+                    <asp:LinkButton ID="lnkSalirCot" runat="server" ForeColor="#009999" Font-Bold="True" Font-Size="Small" OnClick="lnkSalirCot_Click">Salir de Cotización</asp:LinkButton>
+        </tr>
+    </table>
+    <%--</div>--%>
+
+    <asp:ContentPlaceHolder ID="CONTENT" runat="server" />
+</asp:Content>
+
+

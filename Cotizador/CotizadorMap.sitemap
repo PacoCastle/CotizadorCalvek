@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+  <siteMapNode>
+    <!--<SsiteMapNode title="Cotizaciones" url="~/Cotizador/Cotizaciones.aspx"/>-->
+    <!--<siteMapNode url="~/Admin/SeguimientoPedidos/listadoSeguimientoPedidos.aspx" title="Seguimiento Pedidos" description="Seguimiento Pedidos"/>
+    <siteMapNode url="~/VisitasVentas/FormularioVisita.aspx" title="Visitas" description="Visitas"/>
+    <siteMapNode url="~/OrdenesCompra/listadoOrdenesCompra.aspx" title="Ordenes Compra" description="Ordenes Compra"/>
+    <siteMapNode url="~/Cobranza/seguimientoLLamadas/FormularioRegistraLLamadas.aspx" title="Registro Llamadas" description="Registro Llamadas"/>
+    <siteMapNode url="~/Comisiones/adminComisiones.aspx" title="Pagos Facturas" description="Comisiones"/>-->
+  </siteMapNode>
+</siteMap>
